@@ -21,15 +21,15 @@ publishing {
 
             pom.withXml {
                 def root = asNode()
-                root.appendNode('name', 'Gradle Docker plugin')
-                root.appendNode('description', 'Gradle plugin for managing Docker images and containers.')
-                root.appendNode('url', 'https://github.com/bmuschko/gradle-docker-plugin')
-                root.appendNode('inceptionYear', '2014')
+                root.appendNode('name', 'gradle-artifactory-rest-plugin')
+                root.appendNode('description', 'Gradle plugin for working with Artifactorys REST API.')
+                root.appendNode('url', 'https://github.com/cdancy/gradle-artifactory-rest-plugin')
+                root.appendNode('inceptionYear', '2016')
 
                 def scm = root.appendNode('scm')
-                scm.appendNode('url', 'https://github.com/bmuschko/gradle-docker-plugin')
-                scm.appendNode('connection', 'scm:https://bmuschko@github.com/bmuschko/gradle-docker-plugin.git')
-                scm.appendNode('developerConnection', 'scm:git://github.com/bmuschko/gradle-docker-plugin.git')
+                scm.appendNode('url', 'https://github.com/cdancy/gradle-artifactory-rest-plugin')
+                scm.appendNode('connection', 'scm:https://cdancy@github.com/cdancy/gradle-artifactory-rest-plugin.git')
+                scm.appendNode('developerConnection', 'scm:git://github.com/cdancy/gradle-artifactory-rest-plugin.git')
 
                 def license = root.appendNode('licenses').appendNode('license')
                 license.appendNode('name', 'The Apache Software License, Version 2.0')
@@ -37,10 +37,9 @@ publishing {
                 license.appendNode('distribution', 'repo')
 
                 def developers = root.appendNode('developers')
-                def bmuschko = developers.appendNode('developer')
-                bmuschko.appendNode('id', 'bmuschko')
-                bmuschko.appendNode('name', 'Benjamin Muschko')
-                bmuschko.appendNode('email', 'benjamin.muschko@gmail.com')
+                def cdancy = developers.appendNode('developer')
+                cdancy.appendNode('id', 'cdancy')
+                cdancy.appendNode('name', 'Christopher Dancy')
             }
         }
     }
@@ -53,19 +52,18 @@ bintray {
 
     pkg {
         repo = 'gradle-plugins'
-        name = 'com.bmuschko:gradle-docker-plugin'
-        desc = 'Gradle plugin for managing Docker images and containers.'
-        websiteUrl = "https://github.com/bmuschko/${project.name}"
-        issueTrackerUrl = "https://github.com/bmuschko/${project.name}/issues"
-        vcsUrl = "https://github.com/bmuschko/${project.name}.git"
+        name = 'com.github:gradle-artifactory-rest-plugin'
+        desc = 'Gradle plugin for working with Artifactorys REST API.'
+        websiteUrl = "https://github.com/cdancy/${project.name}"
+        issueTrackerUrl = "https://github.com/cdancy/${project.name}/issues"
+        vcsUrl = "https://github.com/cdancy/${project.name}.git"
         licenses = ['Apache-2.0']
-        labels = ['gradle', 'docker', 'container', 'image', 'lightweight', 'vm', 'linux']
+        labels = ['gradle', 'artifactory', 'rest', 'plugin', 'gradle-artifactory-rest-plugin']
         publicDownloadNumbers = true
 
         version {
             vcsTag = "v$project.version"
-            attributes = ['gradle-plugin': ["com.bmuschko.docker-remote-api:${project.group}:${project.name}",
-                                            "com.bmuschko.docker-java-application:${project.group}:${project.name}"]]
+            attributes = ['gradle-plugin': ["gradle-artifactory-rest-plugin"]]
 
             gpg {
                 sign = true

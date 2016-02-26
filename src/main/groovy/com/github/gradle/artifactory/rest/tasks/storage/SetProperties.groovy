@@ -32,9 +32,8 @@ class SetProperties extends AbstractArtifactoryRestTask {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        String tempRepo = repo.call();
-        String tempArtifactPath = artifactPath.call();
-
+        String tempRepo = repo ? repo.call() : null
+        String tempArtifactPath = artifactPath ? artifactPath.call() : null
         if (tempRepo?.trim() && tempArtifactPath?.trim()) {
             if (properties) {
 
