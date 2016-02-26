@@ -1,0 +1,26 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.ajoberstar:gradle-git:$depVersions.gradleGit"
+    }
+}
+
+apply plugin: org.ajoberstar.gradle.git.ghpages.GithubPagesPlugin
+
+githubPages {
+    repoUri = 'git@github.com:cdancy/gradle-artifactory-rest-plugin.git'
+
+    pages {
+        from(javadoc.outputs.files) {
+            into 'docs/javadoc'
+        }
+        from(groovydoc.outputs.files) {
+            into 'docs/groovydoc'
+        }
+    }
+}
+
+publishGhPages.dependsOn javadoc, groovydoc
