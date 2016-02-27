@@ -37,14 +37,14 @@ class SetProperties extends AbstractArtifactoryRestTask {
         if (tempRepo?.trim() && tempArtifactPath?.trim()) {
             if (properties) {
 
-                def storageApi = artifactoryClient.api().storageApi()
+                def api = artifactoryClient.api()
                 def setItemProperties = threadContextClassLoader.createSetItemProperties()
 
                 // due to "bug" in the way artifactory requires you to specify properties
                 // we have to set them one at a time
                 properties.each { k,v ->
                     setItemProperties.add(k.toString(), v.toString())
-                    boolean success = storageApi.setItemProperties(tempRepo, tempArtifactPath, setItemProperties)
+                    boolean success = api.storageApi().setItemProperties(tempRepo, tempArtifactPath, setItemProperties)
                     if (!success) {
                         throw new GradleException("Could not successfully set property: ${k}=${v}, " +
                                 "repo=${tempRepo}, artifactPath=${tempArtifactPath}")

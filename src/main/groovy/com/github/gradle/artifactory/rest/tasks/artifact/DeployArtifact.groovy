@@ -22,7 +22,7 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 
-class RetrieveArtifact extends AbstractArtifactoryRestTask {
+class DeployArtifact extends AbstractArtifactoryRestTask {
 
     @Input
     Closure<String> repo
@@ -31,12 +31,14 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
     Closure<String> artifactPath
 
     @Optional
-    @OutputFile
+    @Input
     File file
 
     @Optional
-    @OutputDirectory
+    @Input
     File directory
+
+    private def deployedArtifact
 
     @Override
     void runRemoteCommand(artifactoryClient) {
@@ -45,15 +47,23 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
         if (tempRepo?.trim() && tempArtifactPath?.trim()) {
 
             def api = artifactoryClient.api().artifactApi()
-            if (file) {
-                writeStreamToDisk(api, tempRepo, tempArtifactPath, file)
-                logger.quiet "Artifact successfully saved @ ${file.path}"
-            } else if (directory) {
-                File nestedFile = new File(directory, new File(tempArtifactPath).name)
-                writeStreamToDisk(api, tempRepo, tempArtifactPath, nestedFile)
-                logger.quiet "Artifact successfully saved @ ${nestedFile.path}"
+
+            if (file && file.exists() && !file.isDirectory()) {
+                def payload = threadContextClassLoader.newPayload(file)
+                deployedArtifact = api.deployArtifact(tempRepo, tempArtifactPath, payload)
+                logger.quiet "Artifact successfully deployed @ ${deployedArtifact.repo}:${deployedArtifact.path}"
+            } else if (directory && directory.exists() && directory.isDirectory()) {
+                deployedArtifact = []
+                for (File it : directory.listFiles()) {
+                    if (!it.isDirectory()) {
+                        def payload = threadContextClassLoader.newPayload(it)
+                        def possibleArtifact = api.deployArtifact(tempRepo, tempArtifactPath + "/${it.name}", payload)
+                        deployedArtifact.add(possibleArtifact)
+                        logger.quiet "Artifact successfully deployed @ ${possibleArtifact.repo}:${possibleArtifact.path}"
+                    }
+                }
             } else {
-                throw new GradleException("Must specify at least one of file or directory")
+                throw new GradleException("`file` and/or `directory` are not valid")
             }
         } else {
             throw new GradleException("`repo` and `artifactPath` do not resolve to " +
@@ -61,12 +71,5 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
         }
     }
 
-    private void writeStreamToDisk(def api, String localRepo, String localPath, File destination) {
-        InputStream inputStream = api.retrieveArtifact(localRepo, localPath)
-        if (inputStream) {
-            threadContextClassLoader.copyInputStreamToFile(inputStream, destination)
-        } else  {
-            throw new GradleException("Artifact does not exist @ ${localRepo}:${localPath}")
-        }
-    }
+    private def deployedArtifact() { deployedArtifact }
 }

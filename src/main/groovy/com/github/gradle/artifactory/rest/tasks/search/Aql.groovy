@@ -30,7 +30,8 @@ class Aql extends AbstractArtifactoryRestTask {
     void runRemoteCommand(artifactoryClient) {
         String tempQuery = query ? query.call() : null
         if (tempQuery?.trim()) {
-            aqlResult = artifactoryClient.api().searchApi().aql(tempQuery.toString());
+            def api = artifactoryClient.api();
+            aqlResult = api.searchApi().aql(tempQuery.toString());
         } else {
             throw new GradleException("`query` does not resolve to a valid String: query=${tempQuery}")
         }

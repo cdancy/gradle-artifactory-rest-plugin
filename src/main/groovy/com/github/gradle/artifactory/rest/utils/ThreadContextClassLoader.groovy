@@ -27,4 +27,6 @@ interface ThreadContextClassLoader {
     def createSetItemProperties()
 
     def copyInputStreamToFile(InputStream inputStream, File file)
+
+    def newPayload(Object resource)
 }

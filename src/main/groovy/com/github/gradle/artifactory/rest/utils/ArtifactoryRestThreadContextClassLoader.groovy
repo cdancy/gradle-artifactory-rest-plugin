@@ -25,6 +25,7 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
 
     public static final String SET_ITEM_PROPERTIES_CLASS = "com.github.artifactory.rest.options.SetItemProperties"
     public static final String FILE_UTILS_CLASS = "org.apache.commons.io.FileUtils"
+    public static final String PAYLOADS_CLASS = "org.jclouds.io.Payloads"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
     private final Set<File> classpath
@@ -64,9 +65,17 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         enclosingClass.getConstructor().newInstance()
     }
 
+    @Override
     def copyInputStreamToFile(InputStream inputStream, File file) {
         Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, FILE_UTILS_CLASS)
         Method method = clazz.getMethod("copyInputStreamToFile", InputStream, File);
         method.invoke(null, inputStream, file);
+    }
+
+    @Override
+    def newPayload(Object file) {
+        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, PAYLOADS_CLASS)
+        Method method = clazz.getMethod("newPayload", Object);
+        method.invoke(null, file);
     }
 }

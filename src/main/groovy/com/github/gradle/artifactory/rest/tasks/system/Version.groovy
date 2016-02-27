@@ -23,7 +23,8 @@ class Version extends AbstractArtifactoryRestTask {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-		version = artifactoryClient.api().systemApi().version();
+        def api = artifactoryClient.api().artifactApi()
+        version = api.systemApi().version();
         logger.quiet "Version: ${version.version}"
         logger.quiet "Revision: ${version.revision}"
         logger.quiet "Addons: ${version.addons}"
