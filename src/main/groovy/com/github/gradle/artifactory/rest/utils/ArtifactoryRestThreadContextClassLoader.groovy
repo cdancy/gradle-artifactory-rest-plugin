@@ -18,11 +18,13 @@ package com.github.gradle.artifactory.rest.utils
 import com.github.gradle.artifactory.rest.ArtifactoryRestExtension
 
 import java.lang.reflect.Constructor
+import java.lang.reflect.Method
 
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
     public static final String CLIENT_CLASS = "com.github.artifactory.rest.ArtifactoryClient"
 
     public static final String SET_ITEM_PROPERTIES_CLASS = "com.github.artifactory.rest.options.SetItemProperties"
+    public static final String FILE_UTILS_CLASS = "org.apache.commons.io.FileUtils"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
     private final Set<File> classpath
@@ -60,5 +62,11 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
                 loadClass(artifactoryClient.class.classLoader,
                         SET_ITEM_PROPERTIES_CLASS)
         enclosingClass.getConstructor().newInstance()
+    }
+
+    def copyInputStreamToFile(InputStream inputStream, File file) {
+        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, FILE_UTILS_CLASS)
+        Method method = clazz.getMethod("copyInputStreamToFile", InputStream, File);
+        method.invoke(null, inputStream, file);
     }
 }

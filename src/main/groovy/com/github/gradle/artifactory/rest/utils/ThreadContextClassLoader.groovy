@@ -25,4 +25,6 @@ interface ThreadContextClassLoader {
     void withClosure(Closure closure)
 
     def createSetItemProperties()
+
+    def copyInputStreamToFile(InputStream inputStream, File file)
 }
