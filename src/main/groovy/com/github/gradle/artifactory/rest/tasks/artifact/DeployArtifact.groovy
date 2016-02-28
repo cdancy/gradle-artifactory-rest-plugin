@@ -33,6 +33,10 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
     @Optional
     @Input
+    Map<String, String> properties = [:]
+
+    @Optional
+    @Input
     File file
 
     @Optional
@@ -50,10 +54,8 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
             def api = artifactoryClient.api().artifactApi()
 
             if (file && file.exists() && !file.isDirectory()) {
-
                 def payload = threadContextClassLoader.newPayload(file)
-                deployedArtifact = api.deployArtifact(tempRepo, tempArtifactPath, payload)
-                logger.quiet "Artifact successfully deployed @ ${deployedArtifact.repo}:${deployedArtifact.path}"
+                deployedArtifact = deployToArtifactory(api, tempRepo, tempArtifactPath, payload)
             } else if (directory && directory.exists() && directory.isDirectory()) {
 
                 def fileList = []
@@ -63,9 +65,8 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
                     for (File it : fileList) {
                         def payload = threadContextClassLoader.newPayload(it)
                         String newBasePath = it.path.replaceFirst(directory.path, "").replaceFirst("/", "")
-                        def possibleArtifact = api.deployArtifact(tempRepo, tempArtifactPath + "/${newBasePath}", payload)
+                        def possibleArtifact = deployToArtifactory(api, tempRepo, "${tempArtifactPath}/${newBasePath}", payload)
                         deployedArtifact.add(possibleArtifact)
-                        logger.quiet "Artifact successfully deployed @ ${possibleArtifact.repo}:${possibleArtifact.path}"
                     }
                 } else {
                     throw new GradleException("Could not find any regular files under directory @ ${directory.path}")
@@ -79,5 +80,13 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
         }
     }
 
-    private def deployedArtifact() { deployedArtifact }
+    private def deployToArtifactory(def api, String repository, String itemPath, def payload) {
+        println "deploy to ${repository}:${itemPath}"
+        def possibleArtifact = api.deployArtifact(repository, itemPath, payload, properties)
+        logger.quiet "Artifact successfully deployed @ ${possibleArtifact.repo}:${possibleArtifact.path}"
+        possibleArtifact
+
+    }
+
+    public def deployedArtifact() { deployedArtifact }
 }

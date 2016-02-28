@@ -31,6 +31,10 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
     Closure<String> artifactPath
 
     @Optional
+    @Input
+    Map<String, String> properties = [:]
+
+    @Optional
     @OutputFile
     File file
 
@@ -62,11 +66,11 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
     }
 
     private void writeStreamToDisk(def api, String localRepo, String localPath, File destination) {
-        InputStream inputStream = api.retrieveArtifact(localRepo, localPath)
+        InputStream inputStream = api.retrieveArtifact(localRepo, localPath, properties)
         if (inputStream) {
             threadContextClassLoader.copyInputStreamToFile(inputStream, destination)
         } else  {
-            throw new GradleException("Artifact does not exist @ ${localRepo}:${localPath}")
+            throw new GradleException("Failed to resolve artifact @ ${localRepo}:${localPath} with properties=${properties}")
         }
     }
 }
