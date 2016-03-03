@@ -24,7 +24,5 @@ interface ThreadContextClassLoader {
      */
     void withClosure(Closure closure)
 
-    def copyInputStreamToFile(InputStream inputStream, File file)
-
     def newPayload(Object resource)
 }

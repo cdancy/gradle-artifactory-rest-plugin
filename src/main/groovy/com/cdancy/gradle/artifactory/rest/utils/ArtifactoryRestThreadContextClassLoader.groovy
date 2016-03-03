@@ -16,13 +16,12 @@
 package com.cdancy.gradle.artifactory.rest.utils
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestExtension
+import org.gradle.api.GradleException
 
 import java.lang.reflect.Method
 
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
     public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient"
-
-    public static final String FILE_UTILS_CLASS = "org.apache.commons.io.FileUtils"
     public static final String PAYLOADS_CLASS = "org.jclouds.io.Payloads"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
@@ -53,13 +52,6 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
 		String endPoint = artifactoryRestExtension.url ? artifactoryRestExtension.url.call() : null;
 		String credentials = artifactoryRestExtension.credentials ? artifactoryRestExtension.credentials.call() : null;
 		clientClass.getConstructor(String, String).newInstance(endPoint,credentials)
-    }
-
-    @Override
-    def copyInputStreamToFile(InputStream inputStream, File file) {
-        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, FILE_UTILS_CLASS)
-        Method method = clazz.getMethod("copyInputStreamToFile", InputStream, File);
-        method.invoke(null, inputStream, file);
     }
 
     @Override

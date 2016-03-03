@@ -35,43 +35,20 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
     @Input
     Map<String, String> properties = [:]
 
-    @Optional
-    @OutputFile
-    File file
-
-    @Optional
-    @OutputDirectory
-    File directory
+    private File artifact;
 
     @Override
     void runRemoteCommand(artifactoryClient) {
         String tempRepo = repo ? repo.call() : null
         String tempArtifactPath = artifactPath ? artifactPath.call() : null
         if (tempRepo?.trim() && tempArtifactPath?.trim()) {
-
             def api = artifactoryClient.api().artifactApi()
-            if (file) {
-                writeStreamToDisk(api, tempRepo, tempArtifactPath, file)
-                logger.quiet "Artifact successfully saved @ ${file.path}"
-            } else if (directory) {
-                File nestedFile = new File(directory, new File(tempArtifactPath).name)
-                writeStreamToDisk(api, tempRepo, tempArtifactPath, nestedFile)
-                logger.quiet "Artifact successfully saved @ ${nestedFile.path}"
-            } else {
-                throw new GradleException("Must specify at least one of file or directory")
-            }
+            artifact = api.retrieveArtifact(tempRepo, tempArtifactPath, properties)
         } else {
             throw new GradleException("`repo` and `artifactPath` do not resolve to " +
                     "valid Strings: repo=${tempRepo}, artifactPath=${tempArtifactPath}")
         }
     }
 
-    private void writeStreamToDisk(def api, String localRepo, String localPath, File destination) {
-        InputStream inputStream = api.retrieveArtifact(localRepo, localPath, properties)
-        if (inputStream) {
-            threadContextClassLoader.copyInputStreamToFile(inputStream, destination)
-        } else  {
-            throw new GradleException("Failed to resolve artifact @ ${localRepo}:${localPath} with properties=${properties}")
-        }
-    }
+    public File artifact() { artifact }
 }
