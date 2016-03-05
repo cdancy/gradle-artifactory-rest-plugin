@@ -21,16 +21,8 @@ import groovy.io.FileType
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.OutputFile
 
 class DeployArtifact extends AbstractArtifactoryRestTask {
-
-    @Input
-    Closure<String> repo
-
-    @Input
-    Closure<String> artifactPath
 
     @Optional
     @Input
@@ -48,36 +40,29 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        String tempRepo = repo ? repo.call() : null
-        String tempArtifactPath = artifactPath ? artifactPath.call() : null
-        if (tempRepo?.trim() && tempArtifactPath?.trim()) {
 
-            def api = artifactoryClient.api().artifactApi()
+        def api = artifactoryClient.api().artifactApi()
 
-            if (file && file.exists() && !file.isDirectory()) {
-                def payload = threadContextClassLoader.newPayload(file)
-                deployedArtifact = deployToArtifactory(api, tempRepo, tempArtifactPath, payload)
-            } else if (directory && directory.exists() && directory.isDirectory()) {
+        if (file && file.exists() && !file.isDirectory()) {
+            def payload = threadContextClassLoader.newPayload(file)
+            deployedArtifact = deployToArtifactory(api, repo(), artifactPath(), payload)
+        } else if (directory && directory.exists() && directory.isDirectory()) {
 
-                def fileList = []
-                directory.eachFileRecurse (FileType.FILES) { fileList << it }
-                if (fileList) {
-                    deployedArtifact = [] // set deployedArtifact to be a List as we have potentially N number of files
-                    for (File it : fileList) {
-                        def payload = threadContextClassLoader.newPayload(it)
-                        String newBasePath = it.path.replaceFirst(directory.path, "").replaceFirst("/", "")
-                        def possibleArtifact = deployToArtifactory(api, tempRepo, "${tempArtifactPath}/${newBasePath}", payload)
-                        deployedArtifact.add(possibleArtifact)
-                    }
-                } else {
-                    throw new GradleException("Could not find any regular files under directory @ ${directory.path}")
+            def fileList = []
+            directory.eachFileRecurse (FileType.FILES) { fileList << it }
+            if (fileList) {
+                deployedArtifact = [] // set deployedArtifact to be a List as we have potentially N number of files
+                for (File it : fileList) {
+                    def payload = threadContextClassLoader.newPayload(it)
+                    String newBasePath = it.path.replaceFirst(directory.path, "").replaceFirst("/", "")
+                    def possibleArtifact = deployToArtifactory(api, repo(), "${artifactPath()}/${newBasePath}", payload)
+                    deployedArtifact.add(possibleArtifact)
                 }
             } else {
-                throw new GradleException("`file` and/or `directory` are not valid")
+                throw new GradleException("Could not find any regular files under directory @ ${directory.path}")
             }
         } else {
-            throw new GradleException("`repo` and `artifactPath` do not resolve to " +
-                    "valid Strings: repo=${tempRepo}, artifactPath=${tempArtifactPath}")
+            throw new GradleException("`file` and/or `directory` are not valid")
         }
     }
 

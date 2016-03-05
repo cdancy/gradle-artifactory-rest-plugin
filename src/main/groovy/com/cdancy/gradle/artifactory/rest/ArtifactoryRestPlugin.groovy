@@ -52,6 +52,7 @@ class ArtifactoryRestPlugin implements Plugin<Project> {
     }
 
     private static Set<File> configurePluginClassPath(Project project) {
+        project.repositories.addAll(project.buildscript.repositories.collect())
         project.configurations.getByName(ARTIFACTORY_CONFIGURATION_NAME).defaultDependencies { dependencies ->
             dependencies.add(project.dependencies.create("com.cdancy:artifactory-rest:$ArtifactoryRestPlugin.ARTIFACTORY_JAVA_DEFAULT_VERSION"))
             dependencies.add(project.dependencies.create('org.slf4j:slf4j-simple:1.7.5'))

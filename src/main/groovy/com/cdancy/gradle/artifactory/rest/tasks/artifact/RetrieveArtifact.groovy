@@ -17,19 +17,10 @@ package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask;
 
-import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.OutputFile
 
 class RetrieveArtifact extends AbstractArtifactoryRestTask {
-
-    @Input
-    Closure<String> repo
-
-    @Input
-    Closure<String> artifactPath
 
     @Optional
     @Input
@@ -39,15 +30,8 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        String tempRepo = repo ? repo.call() : null
-        String tempArtifactPath = artifactPath ? artifactPath.call() : null
-        if (tempRepo?.trim() && tempArtifactPath?.trim()) {
-            def api = artifactoryClient.api().artifactApi()
-            artifact = api.retrieveArtifact(tempRepo, tempArtifactPath, properties)
-        } else {
-            throw new GradleException("`repo` and `artifactPath` do not resolve to " +
-                    "valid Strings: repo=${tempRepo}, artifactPath=${tempArtifactPath}")
-        }
+        def api = artifactoryClient.api().artifactApi()
+        artifact = api.retrieveArtifact(repo(), artifactPath(), properties)
     }
 
     public File artifact() { artifact }

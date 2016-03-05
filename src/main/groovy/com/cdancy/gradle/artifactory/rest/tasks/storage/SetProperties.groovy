@@ -22,35 +22,21 @@ import org.gradle.api.tasks.Input
 class SetProperties extends AbstractArtifactoryRestTask {
 
     @Input
-    Closure<String> repo
-
-    @Input
-    Closure<String> artifactPath
-
-    @Input
     Map<String, String> properties = [:]
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        String tempRepo = repo ? repo.call() : null
-        String tempArtifactPath = artifactPath ? artifactPath.call() : null
-        if (tempRepo?.trim() && tempArtifactPath?.trim()) {
-            if (properties) {
-
-                def api = artifactoryClient.api()
-                boolean success = api.storageApi().setItemProperties(tempRepo, tempArtifactPath, properties)
-                if (success) {
-                    logger.quiet("Properties '${properties}' added @ ${tempRepo}:${tempArtifactPath}")
-                } else {
-                    throw new GradleException("Could not successfully set properties: '${properties}', " +
-                            "repo=${tempRepo}, artifactPath=${tempArtifactPath}")
-                }
+        if (properties) {
+            def api = artifactoryClient.api()
+            boolean success = api.storageApi().setItemProperties(repo(), artifactPath(), properties)
+            if (success) {
+                logger.quiet("Properties '${properties}' added @ ${repo()}:${artifactPath()}")
             } else {
-                logger.quiet "`properties` are empty. Nothing to do..."
+                throw new GradleException("Could not successfully set properties: '${properties}', " +
+                        "repo=${repo()}, artifactPath=${artifactPath()}")
             }
         } else {
-            throw new GradleException("`repo` and `artifactPath` do not resolve to " +
-                    "valid Strings: repo=${tempRepo}, artifactPath=${tempArtifactPath}")
+            logger.quiet "`properties` are empty. Nothing to do..."
         }
     }
 }

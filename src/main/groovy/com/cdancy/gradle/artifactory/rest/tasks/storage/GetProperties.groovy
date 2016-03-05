@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cdancy.gradle.artifactory.rest.tasks.system
+package com.cdancy.gradle.artifactory.rest.tasks.storage
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask;
+import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
 
-class Version extends AbstractArtifactoryRestTask {
+class GetProperties extends AbstractArtifactoryRestTask {
 
-    private def version;
+    private Map<String, List<String>> properties = [:]
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        def api = artifactoryClient.api().systemApi()
-        version = api.version()
-        logger.quiet "Version: ${version.version}"
-        logger.quiet "Revision: ${version.revision}"
-        logger.quiet "Addons: ${version.addons}"
-        logger.quiet "License: ${version.license}"
+        def api = artifactoryClient.api()
+        properties = api.storageApi().getItemProperties(repo(), artifactPath())
+        logger.quiet("Found '${properties.size()}' properties @ ${repo()}:${artifactPath()}")
     }
 
-    public def version() { version }
+    private Map<String, String> properties() { properties }
 }
 

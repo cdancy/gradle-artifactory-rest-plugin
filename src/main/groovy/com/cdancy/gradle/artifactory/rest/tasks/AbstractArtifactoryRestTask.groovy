@@ -17,10 +17,37 @@ package com.cdancy.gradle.artifactory.rest.tasks
 
 import com.cdancy.gradle.artifactory.rest.utils.ThreadContextClassLoader
 import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.*
 
 abstract class AbstractArtifactoryRestTask extends DefaultTask {
+
+    @Input
+    @Optional
+    Closure<String> repo
+
+    @Input
+    @Optional
+    Closure<String> artifactPath
+
+    public String repo() {
+        String possibleRepo = repo ? repo.call() : null
+        if (possibleRepo?.trim()) {
+            possibleRepo
+        } else {
+            throw new GradleException("repo does not resolve to a valid String: repo=" + possibleRepo)
+        }
+    }
+
+    public String artifactPath() {
+        String possibleArtifactPath = artifactPath ? artifactPath.call() : null
+        if (possibleArtifactPath?.trim()) {
+            possibleArtifactPath
+        } else {
+            throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=" + possibleArtifactPath)
+        }
+    }
 
     ThreadContextClassLoader threadContextClassLoader
 
