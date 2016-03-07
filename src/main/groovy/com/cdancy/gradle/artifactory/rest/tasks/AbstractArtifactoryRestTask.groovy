@@ -32,20 +32,20 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
     Closure<String> artifactPath
 
     public String repo() {
-        String possibleRepo = repo ? repo.call() : null
-        if (possibleRepo?.trim()) {
-            possibleRepo
+        String var = repo ? repo.call() : null
+        if (var?.trim()) {
+            var
         } else {
-            throw new GradleException("repo does not resolve to a valid String: repo=" + possibleRepo)
+            throw new GradleException("repo does not resolve to a valid String: repo=" + var)
         }
     }
 
     public String artifactPath() {
-        String possibleArtifactPath = artifactPath ? artifactPath.call() : null
-        if (possibleArtifactPath?.trim()) {
-            possibleArtifactPath
+        String var = artifactPath ? artifactPath.call() : null
+        if (var?.trim()) {
+            var
         } else {
-            throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=" + possibleArtifactPath)
+            throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=" + var)
         }
     }
 

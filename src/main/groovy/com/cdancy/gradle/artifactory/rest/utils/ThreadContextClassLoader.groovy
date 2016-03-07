@@ -25,4 +25,6 @@ interface ThreadContextClassLoader {
     void withClosure(Closure closure)
 
     def newPayload(Object resource)
+
+    def newPromote(String promotedRepo, String image, String tag, boolean copy)
 }

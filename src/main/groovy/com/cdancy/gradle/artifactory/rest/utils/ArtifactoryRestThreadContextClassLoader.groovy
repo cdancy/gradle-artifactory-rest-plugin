@@ -23,6 +23,7 @@ import java.lang.reflect.Method
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
     public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient"
     public static final String PAYLOADS_CLASS = "org.jclouds.io.Payloads"
+    public static final String PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.Promote"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
     private final Set<File> classpath
@@ -59,5 +60,11 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, PAYLOADS_CLASS)
         Method method = clazz.getMethod("newPayload", Object);
         method.invoke(null, file);
+    }
+
+    def newPromote(String promotedRepo, String image, String tag, boolean copy) {
+        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, PROMOTE_CLASS)
+        Method method = clazz.getMethod("create", String, String, String, boolean);
+        method.invoke(null, promotedRepo, image, tag, copy);
     }
 }
