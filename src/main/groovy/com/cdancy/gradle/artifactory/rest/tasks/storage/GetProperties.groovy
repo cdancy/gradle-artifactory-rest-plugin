@@ -28,6 +28,6 @@ class GetProperties extends AbstractArtifactoryRestTask {
         logger.quiet("Found '${properties.size()}' properties @ ${repo()}:${artifactPath()}")
     }
 
-    private Map<String, String> properties() { properties }
+    public Map<String, List<String>> properties() { properties }
 }
 

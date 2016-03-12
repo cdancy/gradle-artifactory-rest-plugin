@@ -1,3 +1,13 @@
+buildscript {
+	repositories {
+		jcenter()
+		mavenCentral()
+	}
+	dependencies {
+		classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
+	}
+}
+
 apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -9,16 +19,6 @@ apply from: "$rootDir/gradle/additional-artifacts.gradle"
 apply from: "$rootDir/gradle/publishing.gradle"
 apply from: "$rootDir/gradle/documentation.gradle"
 apply from: "$rootDir/gradle/release.gradle"
-
-buildscript {
-    repositories {
-        jcenter()
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:3.1.1"
-    }
-}
 
 repositories {
     jcenter()
