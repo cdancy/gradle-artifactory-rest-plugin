@@ -73,7 +73,7 @@ publishing {
 		artifactoryJava(MavenPublication) {
 			from components.java
 			artifact sourcesJar
-			artifact javadocJar
+			artifact groovydocJar
 		}
 	}
 }

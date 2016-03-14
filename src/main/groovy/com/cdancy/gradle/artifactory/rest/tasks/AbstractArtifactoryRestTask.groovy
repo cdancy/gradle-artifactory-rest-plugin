@@ -18,7 +18,6 @@ package com.cdancy.gradle.artifactory.rest.tasks
 import com.cdancy.gradle.artifactory.rest.utils.ThreadContextClassLoader
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.*
 
 abstract class AbstractArtifactoryRestTask extends DefaultTask {
@@ -57,6 +56,10 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
         } else {
             throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=" + var)
         }
+    }
+
+    public String randomString() {
+        UUID.randomUUID().toString().replaceAll("-", "")
     }
 
     ThreadContextClassLoader threadContextClassLoader

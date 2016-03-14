@@ -16,21 +16,22 @@
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
-import com.google.common.collect.Lists
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 class SetProperties extends AbstractArtifactoryRestTask {
 
-    private Map<String, List<String>> artifacts = new HashMap<>();
-
     @Input
     Map<String, String> properties = [:]
 
     @Input
     @Optional
-    long requestInterval = 500
+    long requestInterval = 1000
+
+    @Input
+    @Optional
+    Map<String, List<String>> artifacts = new HashMap<>();
 
     @Override
     void runRemoteCommand(artifactoryClient) {
@@ -45,7 +46,7 @@ class SetProperties extends AbstractArtifactoryRestTask {
                     v.each { it ->
                         boolean success = api.storageApi().setItemProperties(k, it, properties)
                         if (success) {
-                            logger.quiet("Properties '${properties}' set @ ${k}:${it}")
+                            logger.quiet("Properties ${properties} set @ ${k}:${it}")
                         } else {
                             throw new GradleException("Could not successfully set properties '${properties}' @ " +
                                     "${k}:${it}")
@@ -61,7 +62,7 @@ class SetProperties extends AbstractArtifactoryRestTask {
         }
     }
 
-    public void onArtifact(String repo, String artifactPath) {
+    void onArtifact(String repo, String artifactPath) {
         repo = checkString(repo);
         artifactPath = checkString(artifactPath)
         List<String> possibleArtifacts = artifacts.get(repo);
@@ -69,7 +70,12 @@ class SetProperties extends AbstractArtifactoryRestTask {
             possibleArtifacts = new ArrayList<>()
             artifacts.put(repo, possibleArtifacts)
         }
-        possibleArtifacts.add(artifactPath)
+
+        if (!possibleArtifacts.contains(artifactPath))
+            possibleArtifacts.add(artifactPath)
+
+        if (possibleArtifacts.isEmpty())
+            artifacts.remove(repo)
     }
 }
 

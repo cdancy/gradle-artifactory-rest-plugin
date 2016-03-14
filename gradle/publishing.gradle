@@ -17,7 +17,6 @@ publishing {
             from components.java
             artifact sourcesJar
             artifact groovydocJar
-            artifact javadocJar
 
             pom.withXml {
                 def root = asNode()
@@ -75,10 +74,6 @@ bintray {
 
 String resolveProperty(String envVarKey, String projectPropKey) {
     String propValue = System.getenv()[envVarKey]
-
-    if(propValue) {
-        return propValue
-    }
-
+    if(propValue) { return propValue }
     hasProperty(projectPropKey) ? getProperty(projectPropKey) : null
 }

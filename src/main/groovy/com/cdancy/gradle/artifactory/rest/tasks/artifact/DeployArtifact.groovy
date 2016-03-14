@@ -15,8 +15,7 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask;
-
+import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
 import groovy.io.FileType
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
@@ -74,5 +73,5 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
     }
 
-    public def deployedArtifact() { deployedArtifact }
+    def deployedArtifact() { deployedArtifact }
 }

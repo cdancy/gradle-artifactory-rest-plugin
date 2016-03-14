@@ -17,6 +17,7 @@ package com.cdancy.gradle.artifactory.rest.tasks.search
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
 class PropertySearch extends AbstractArtifactoryRestTask {
 
@@ -24,9 +25,10 @@ class PropertySearch extends AbstractArtifactoryRestTask {
     Map<String, List<String>> properties = [:]
 
     @Input
+    @Optional
     List<String> repos = []
 
-    private def urls
+    private List<String> urls = []
 
     @Override
     void runRemoteCommand(artifactoryClient) {
@@ -39,6 +41,6 @@ class PropertySearch extends AbstractArtifactoryRestTask {
         }
     }
 
-    public def urls() { urls }
+    List<String> urls() { urls }
 }
 
