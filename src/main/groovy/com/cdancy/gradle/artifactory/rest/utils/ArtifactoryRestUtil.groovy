@@ -1,10 +1,6 @@
 package com.cdancy.gradle.artifactory.rest.utils
 
-import java.io.File;
 import java.lang.reflect.Array
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.Set;
 
 final class ArtifactoryRestUtil {
 	
