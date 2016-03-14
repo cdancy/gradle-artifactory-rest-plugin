@@ -26,7 +26,7 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
     @Optional
     @Input
-    Map<String, String> properties = [:]
+    Map<String, List<String>> properties = [:]
 
     @Optional
     @Input

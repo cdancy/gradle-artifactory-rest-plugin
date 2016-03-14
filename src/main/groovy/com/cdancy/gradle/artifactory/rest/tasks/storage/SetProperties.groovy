@@ -16,28 +16,60 @@
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.google.common.collect.Lists
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
 class SetProperties extends AbstractArtifactoryRestTask {
+
+    private Map<String, List<String>> artifacts = new HashMap<>();
 
     @Input
     Map<String, String> properties = [:]
 
+    @Input
+    @Optional
+    long requestInterval = 500
+
     @Override
     void runRemoteCommand(artifactoryClient) {
         if (properties) {
-            def api = artifactoryClient.api()
-            boolean success = api.storageApi().setItemProperties(repo(), artifactPath(), properties)
-            if (success) {
-                logger.quiet("Properties '${properties}' added @ ${repo()}:${artifactPath()}")
+            if (repo != null && artifactPath != null) {
+                onArtifact(repo(), artifactPath())
+            }
+
+            if (artifacts.size() > 0) {
+                def api = artifactoryClient.api()
+                artifacts.each { k, v ->
+                    v.each { it ->
+                        boolean success = api.storageApi().setItemProperties(k, it, properties)
+                        if (success) {
+                            logger.quiet("Properties '${properties}' set @ ${k}:${it}")
+                        } else {
+                            throw new GradleException("Could not successfully set properties '${properties}' @ " +
+                                    "${k}:${it}")
+                        }
+                        sleep(requestInterval)
+                    }
+                }
             } else {
-                throw new GradleException("Could not successfully set properties: '${properties}', " +
-                        "repo=${repo()}, artifactPath=${artifactPath()}")
+                logger.quiet "`artifacts` are empty. Nothing to do..."
             }
         } else {
             logger.quiet "`properties` are empty. Nothing to do..."
         }
+    }
+
+    public void onArtifact(String repo, String artifactPath) {
+        repo = checkString(repo);
+        artifactPath = checkString(artifactPath)
+        List<String> possibleArtifacts = artifacts.get(repo);
+        if (possibleArtifacts == null) {
+            possibleArtifacts = new ArrayList<>()
+            artifacts.put(repo, possibleArtifacts)
+        }
+        possibleArtifacts.add(artifactPath)
     }
 }
 
