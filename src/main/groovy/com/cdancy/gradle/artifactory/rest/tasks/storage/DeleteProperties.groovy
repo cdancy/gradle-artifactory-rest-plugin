@@ -28,7 +28,7 @@ class DeleteProperties extends AbstractArtifactoryRestTask {
     void runRemoteCommand(artifactoryClient) {
         if (properties) {
             def api = artifactoryClient.api()
-            boolean success = api.storageApi().deleteItemProperties(repo().toString(), artifactPath().toString(), properties)
+            boolean success = api.storageApi().deleteItemProperties(repo().toString(), artifactPath().toString(), gstringMapToStringMap(properties))
             if (success) {
                 logger.quiet("Successfully deleted properties @ ${repo()}:${artifactPath()}")
             } else {

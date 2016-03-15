@@ -24,14 +24,14 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
 
     @Optional
     @Input
-    Map<String, String> properties = [:]
+    Map<String, List<String>> properties = [:]
 
     private File artifact;
 
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().artifactApi()
-        artifact = api.retrieveArtifact(repo().toString(), artifactPath().toString(), properties)
+        artifact = api.retrieveArtifact(repo().toString(), artifactPath().toString(), gstringMapToStringMap(properties))
     }
 
     public File artifact() { artifact }

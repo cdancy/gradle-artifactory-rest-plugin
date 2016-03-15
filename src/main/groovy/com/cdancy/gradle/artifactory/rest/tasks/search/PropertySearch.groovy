@@ -34,7 +34,7 @@ class PropertySearch extends AbstractArtifactoryRestTask {
     void runRemoteCommand(artifactoryClient) {
         if (properties) {
             def api = artifactoryClient.api()
-            urls = api.searchApi().propertySearch(properties, repos ? repos : null)
+            urls = api.searchApi().propertySearch(gstringMapToStringMap(properties), repos ? repos : null)
             logger.quiet("Found '${urls.size()}' artifacts with properties ${properties}")
         } else {
             logger.quiet "`properties` are empty. Nothing to do..."

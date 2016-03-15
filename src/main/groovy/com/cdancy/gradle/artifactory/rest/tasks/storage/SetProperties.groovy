@@ -44,7 +44,7 @@ class SetProperties extends AbstractArtifactoryRestTask {
                 def api = artifactoryClient.api()
                 artifacts.each { k, v ->
                     v.each { it ->
-                        boolean success = api.storageApi().setItemProperties(k.toString(), it.toString(), properties)
+                        boolean success = api.storageApi().setItemProperties(k.toString(), it.toString(), gstringMapToStringMap(properties))
                         if (success) {
                             logger.quiet("Properties ${properties} set @ ${k}:${it}")
                         } else {

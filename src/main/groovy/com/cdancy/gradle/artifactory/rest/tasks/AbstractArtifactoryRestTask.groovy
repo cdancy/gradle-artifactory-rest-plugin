@@ -58,6 +58,14 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
         }
     }
 
+    public Map<String, List<String>> gstringMapToStringMap(Map<String, List<String>> gStringMap) {
+        Map<String, List<String>> convertedMap = new HashMap<>();
+        gStringMap.each { k,v ->
+            convertedMap.put(k.toString(), v*.toString())
+        }
+        convertedMap
+    }
+
     public String randomString() {
         UUID.randomUUID().toString().replaceAll("-", "")
     }
