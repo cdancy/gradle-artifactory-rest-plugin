@@ -24,7 +24,7 @@ class GetProperties extends AbstractArtifactoryRestTask {
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api()
-        properties = api.storageApi().getItemProperties(repo(), artifactPath())
+        properties = api.storageApi().getItemProperties(repo().toString(), artifactPath().toString())
         logger.quiet("Found '${properties.size()}' properties @ ${repo()}:${artifactPath()}")
     }
 

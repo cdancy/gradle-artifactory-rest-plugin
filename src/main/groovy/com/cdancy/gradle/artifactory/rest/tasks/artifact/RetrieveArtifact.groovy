@@ -31,7 +31,7 @@ class RetrieveArtifact extends AbstractArtifactoryRestTask {
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().artifactApi()
-        artifact = api.retrieveArtifact(repo(), artifactPath(), properties)
+        artifact = api.retrieveArtifact(repo().toString(), artifactPath().toString(), properties)
     }
 
     public File artifact() { artifact }

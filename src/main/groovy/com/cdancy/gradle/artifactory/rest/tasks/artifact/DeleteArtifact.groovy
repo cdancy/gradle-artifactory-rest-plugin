@@ -23,7 +23,7 @@ class DeleteArtifact extends AbstractArtifactoryRestTask {
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().artifactApi()
-        boolean success = api.deleteArtifact(repo(), artifactPath())
+        boolean success = api.deleteArtifact(repo().toString(), artifactPath().toString())
         if (success) {
             logger.quiet("Successfully deleted artifact @ ${repo()}:${artifactPath()}")
         } else {

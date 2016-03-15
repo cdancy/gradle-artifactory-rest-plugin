@@ -23,7 +23,7 @@ import org.gradle.api.tasks.Optional
 class SetProperties extends AbstractArtifactoryRestTask {
 
     @Input
-    Map<String, String> properties = [:]
+    Map<String, List<String>> properties = [:]
 
     @Input
     @Optional
@@ -44,7 +44,7 @@ class SetProperties extends AbstractArtifactoryRestTask {
                 def api = artifactoryClient.api()
                 artifacts.each { k, v ->
                     v.each { it ->
-                        boolean success = api.storageApi().setItemProperties(k, it, properties)
+                        boolean success = api.storageApi().setItemProperties(k.toString(), it.toString(), properties)
                         if (success) {
                             logger.quiet("Properties ${properties} set @ ${k}:${it}")
                         } else {

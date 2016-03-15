@@ -37,7 +37,7 @@ class Promote extends AbstractArtifactoryRestTask {
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().dockerApi()
         def dockerPromote = threadContextClassLoader.newPromote(promotedRepo(), image(), tag(), copy)
-        boolean success = api.promote(repo(), dockerPromote)
+        boolean success = api.promote(repo().toString(), dockerPromote)
         if (success) {
             logger.quiet("Successfully promoted image @ ${repo()}/${image()}:${tag()} to ${promotedRepo()}")
         } else {

@@ -67,7 +67,7 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
     private def deployToArtifactory(def api, String repository, String itemPath, def payload) {
         println "deploy to ${repository}:${itemPath}"
-        def possibleArtifact = api.deployArtifact(repository, itemPath, payload, properties)
+        def possibleArtifact = api.deployArtifact(repository.toString(), itemPath.toString(), payload, properties)
         logger.quiet "Artifact successfully deployed @ ${possibleArtifact.repo}:${possibleArtifact.path}"
         possibleArtifact
 
