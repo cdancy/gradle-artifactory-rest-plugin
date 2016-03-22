@@ -15,7 +15,6 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
@@ -35,7 +34,7 @@ class DeleteArtifact extends ArtifactAware {
     void runRemoteCommand(artifactoryClient) {
 
         if (repo != null && artifactPath != null) {
-            onArtifact(repo(), artifactPath())
+            artifact(repo(), artifactPath())
         }
 
         if (artifacts) {
