@@ -15,11 +15,11 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 
-class DeleteProperties extends AbstractArtifactoryRestTask {
+class DeleteProperties extends ArtifactAware {
 
     @Input
     List<String> properties = []

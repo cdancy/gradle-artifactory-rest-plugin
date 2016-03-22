@@ -22,13 +22,6 @@ import org.gradle.api.tasks.*
 
 abstract class AbstractArtifactoryRestTask extends DefaultTask {
 
-    @Input
-    @Optional
-    Closure<String> repo
-
-    @Input
-    @Optional
-    Closure<String> artifactPath
 
     public String checkString(String dirtyString) {
         if (dirtyString == null) throw new GradleException("String to sanitize must not be null");
@@ -37,24 +30,6 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
             return tempString;
         } else {
             throw new GradleException("String to sanitize must not be empty")
-        }
-    }
-
-    public String repo() {
-        String var = repo ? repo.call() : null
-        if (var?.trim()) {
-            var
-        } else {
-            throw new GradleException("repo does not resolve to a valid String: repo=" + var)
-        }
-    }
-
-    public String artifactPath() {
-        String var = artifactPath ? artifactPath.call() : null
-        if (var?.trim()) {
-            var
-        } else {
-            throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=" + var)
         }
     }
 

@@ -16,12 +16,13 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import groovy.io.FileType
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
-class DeployArtifact extends AbstractArtifactoryRestTask {
+class DeployArtifact extends ArtifactAware {
 
     @Optional
     @Input
@@ -35,7 +36,7 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
     @Input
     File directory
 
-    private def deployedArtifact
+    private def artifacts = []
 
     @Override
     void runRemoteCommand(artifactoryClient) {
@@ -44,18 +45,17 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
         if (file && file.exists() && !file.isDirectory()) {
             def payload = threadContextClassLoader.newPayload(file)
-            deployedArtifact = deployToArtifactory(api, repo(), artifactPath(), payload)
+            artifacts.add(deployToArtifactory(api, repo(), artifactPath(), payload))
         } else if (directory && directory.exists() && directory.isDirectory()) {
 
             def fileList = []
             directory.eachFileRecurse (FileType.FILES) { fileList << it }
             if (fileList) {
-                deployedArtifact = [] // set deployedArtifact to be a List as we have potentially N number of files
                 for (File it : fileList) {
                     def payload = threadContextClassLoader.newPayload(it)
                     String newBasePath = it.path.replaceFirst(directory.path, "").replaceFirst("/", "")
                     def possibleArtifact = deployToArtifactory(api, repo(), "${artifactPath()}/${newBasePath}", payload)
-                    deployedArtifact.add(possibleArtifact)
+                    artifacts.add(possibleArtifact)
                 }
             } else {
                 throw new GradleException("Could not find any regular files under directory @ ${directory.path}")
@@ -73,5 +73,5 @@ class DeployArtifact extends AbstractArtifactoryRestTask {
 
     }
 
-    def deployedArtifact() { deployedArtifact }
+    def artifacts() { artifacts }
 }

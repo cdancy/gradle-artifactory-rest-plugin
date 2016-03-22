@@ -16,18 +16,61 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
-class DeleteArtifact extends AbstractArtifactoryRestTask {
+class DeleteArtifact extends ArtifactAware {
+
+    @Input
+    @Optional
+    long requestInterval = 1000
+
+    @Input
+    @Optional
+    Map<String, List<String>> artifacts = new HashMap<>();
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        def api = artifactoryClient.api().artifactApi()
-        boolean success = api.deleteArtifact(repo().toString(), artifactPath().toString())
-        if (success) {
-            logger.quiet("Successfully deleted artifact @ ${repo()}:${artifactPath()}")
-        } else {
-            throw new GradleException("Failed to delete artifact @ ${repo()}:${artifactPath()}")
+
+        if (repo != null && artifactPath != null) {
+            onArtifact(repo(), artifactPath())
         }
+
+        if (artifacts) {
+            def api = artifactoryClient.api().artifactApi()
+            gstringMapToStringMap(artifacts).each { k, v ->
+                v.each { it ->
+                    String localRepo = k.toString()
+                    String localPath = it.toString()
+                    boolean success = api.deleteArtifact(localRepo, localPath)
+                    if (success) {
+                        logger.quiet("Successfully deleted artifact @ ${localRepo}:${localPath}")
+                    } else {
+                        throw new GradleException("Failed to delete artifact @ ${localRepo}:${localPath}")
+                    }
+                    sleep(requestInterval)
+                }
+            }
+        } else {
+            logger.quiet "`artifacts` are empty. Nothing to do..."
+        }
+    }
+
+    void artifact(String repo, String artifactPath) {
+        repo = checkString(repo);
+        artifactPath = checkString(artifactPath)
+        List<String> possibleArtifacts = artifacts.get(repo);
+        if (possibleArtifacts == null) {
+            possibleArtifacts = new ArrayList<>()
+            artifacts.put(repo, possibleArtifacts)
+        }
+
+        if (!possibleArtifacts.contains(artifactPath))
+            possibleArtifacts.add(artifactPath)
+
+        if (possibleArtifacts.isEmpty())
+            artifacts.remove(repo)
     }
 }

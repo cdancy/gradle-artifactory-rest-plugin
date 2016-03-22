@@ -15,12 +15,11 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask;
-
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware;
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
-class RetrieveArtifact extends AbstractArtifactoryRestTask {
+class RetrieveArtifact extends ArtifactAware {
 
     @Optional
     @Input

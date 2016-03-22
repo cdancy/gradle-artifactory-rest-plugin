@@ -15,9 +15,9 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 
-class GetProperties extends AbstractArtifactoryRestTask {
+class GetProperties extends ArtifactAware {
 
     private Map<String, List<String>> properties = [:]
 

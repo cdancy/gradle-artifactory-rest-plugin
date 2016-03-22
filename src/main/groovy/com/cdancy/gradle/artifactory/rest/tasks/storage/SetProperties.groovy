@@ -15,12 +15,12 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
-class SetProperties extends AbstractArtifactoryRestTask {
+class SetProperties extends ArtifactAware {
 
     @Input
     Map<String, List<String>> properties = [:]
@@ -62,7 +62,12 @@ class SetProperties extends AbstractArtifactoryRestTask {
         }
     }
 
+    @Deprecated
     void onArtifact(String repo, String artifactPath) {
+        artifact(repo, artifactPath)
+    }
+
+    void artifact(String repo, String artifactPath) {
         repo = checkString(repo);
         artifactPath = checkString(artifactPath)
         List<String> possibleArtifacts = artifacts.get(repo);
