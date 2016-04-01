@@ -4,7 +4,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
     }
 }
 
@@ -45,13 +45,15 @@ publishing {
 }
 
 bintray {
-    user = resolveProperty('BINTRAY_USER', 'bintrayUser')
-    key = resolveProperty('BINTRAY_KEY', 'bintrayKey')
+
+    user = project.bintrayUsername
+    key = project.bintrayKey
     publications = ['mavenJava']
+    publish = true
 
     pkg {
         repo = 'gradle-plugins'
-        name = 'com.github:gradle-artifactory-rest-plugin'
+        name = 'gradle-artifactory-rest-plugin'
         desc = 'Gradle plugin for working with Artifactorys REST API.'
         websiteUrl = "https://github.com/cdancy/${project.name}"
         issueTrackerUrl = "https://github.com/cdancy/${project.name}/issues"
@@ -59,8 +61,11 @@ bintray {
         licenses = ['Apache-2.0']
         labels = ['gradle', 'artifactory', 'rest', 'plugin', 'gradle-artifactory-rest-plugin']
         publicDownloadNumbers = true
+        githubRepo = "cdancy/${project.name}"
+        githubReleaseNotesFile = 'RELEASE_NOTES.md'
 
         version {
+            released  = new Date()
             vcsTag = "v$project.version"
             attributes = ['gradle-plugin': ["gradle-artifactory-rest-plugin"]]
 
