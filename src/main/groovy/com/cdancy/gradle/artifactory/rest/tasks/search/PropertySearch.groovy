@@ -28,19 +28,19 @@ class PropertySearch extends AbstractArtifactoryRestTask {
     @Optional
     List<String> repos = []
 
-    private List<String> urls = []
+    private List<?> results = []
 
     @Override
     void runRemoteCommand(artifactoryClient) {
         if (properties) {
             def api = artifactoryClient.api()
-            urls = api.searchApi().propertySearch(gstringMapToStringMap(properties), repos ? repos : null)
-            logger.quiet("Found '${urls.size()}' artifacts with properties ${properties}")
+            results.addAll(api.searchApi().propertySearch(gstringMapToStringMap(properties), repos ? repos : null))
+            logger.quiet("Found '${results.size()}' artifacts with properties ${properties}")
         } else {
             logger.quiet "`properties` are empty. Nothing to do..."
         }
     }
 
-    List<String> urls() { urls }
+    List<?> results() { results }
 }
 
