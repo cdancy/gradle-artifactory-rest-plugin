@@ -68,19 +68,19 @@ class SetProperties extends ArtifactAware {
     }
 
     void artifact(String repo, String artifactPath) {
-        repo = checkString(repo);
-        artifactPath = checkString(artifactPath)
-        List<String> possibleArtifacts = artifacts.get(repo);
+        def localRepo = checkString(repo);
+        def localArtifactPath = checkString(artifactPath)
+        List<String> possibleArtifacts = artifacts.get(localRepo);
         if (possibleArtifacts == null) {
             possibleArtifacts = new ArrayList<>()
-            artifacts.put(repo, possibleArtifacts)
+            artifacts.put(localRepo, possibleArtifacts)
         }
 
-        if (!possibleArtifacts.contains(artifactPath))
-            possibleArtifacts.add(artifactPath)
+        if (!possibleArtifacts.contains(localArtifactPath))
+            possibleArtifacts.add(localArtifactPath)
 
         if (possibleArtifacts.isEmpty())
-            artifacts.remove(repo)
+            artifacts.remove(localRepo)
     }
 }
 
