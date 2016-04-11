@@ -11,7 +11,7 @@ buildscript() {
  		mavenCentral()
  	}
  	dependencies {
- 		classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: '0.0.1-SNAPSHOT', changing: true
+ 		classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: '0.0.3'
  	}
  }
 
