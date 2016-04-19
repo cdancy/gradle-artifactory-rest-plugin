@@ -24,6 +24,10 @@ class DeleteArtifact extends ArtifactAware {
 
     @Input
     @Optional
+    boolean failFast = false
+
+    @Input
+    @Optional
     long requestInterval = 1000
 
     @Input
@@ -38,6 +42,7 @@ class DeleteArtifact extends ArtifactAware {
         }
 
         if (artifacts) {
+            int errors = 0
             def api = artifactoryClient.api().artifactApi()
             gstringMapToStringMap(artifacts).each { k, v ->
                 v.each { it ->
@@ -47,11 +52,19 @@ class DeleteArtifact extends ArtifactAware {
                     if (success) {
                         logger.quiet("Successfully deleted artifact @ ${localRepo}:${localPath}")
                     } else {
-                        throw new GradleException("Failed to delete artifact @ ${localRepo}:${localPath}")
+                        String errorMessage = "Failed to delete artifact @ ${localRepo}:${localPath}"
+                        if (failFast) {
+                            throw new GradleException(errorMessage)
+                        } else {
+                            errors = errors++
+                            logger.error(errorMessage)
+                        }
                     }
                     sleep(requestInterval)
                 }
             }
+            if (errors > 0)
+                throw new GradleException("Failed to delete ${errors} artifact(s)")
         } else {
             logger.quiet "`artifacts` are empty. Nothing to do..."
         }
