@@ -17,19 +17,20 @@ package com.cdancy.gradle.artifactory.rest.utils
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestExtension
 import org.gradle.api.GradleException
+import org.gradle.api.file.FileCollection
 
 import java.lang.reflect.Method
 
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
-    public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient"
     public static final String PAYLOADS_CLASS = "org.jclouds.io.Payloads"
     public static final String PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.Promote"
+    public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
-    private final Set<File> classpath
+    private final FileCollection classpath
     private def artifactoryClient
 
-    ArtifactoryRestThreadContextClassLoader(ArtifactoryRestExtension artifactoryRestExtension, Set<File> classpath) {
+    ArtifactoryRestThreadContextClassLoader(ArtifactoryRestExtension artifactoryRestExtension, FileCollection classpath) {
         this.artifactoryRestExtension = artifactoryRestExtension
         this.classpath = classpath
     }
@@ -48,7 +49,7 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
     }
 	
     private def generateClient() {
-        ClassLoader classLoader = ArtifactoryRestUtil.createClassLoader(classpath)
+        ClassLoader classLoader = ArtifactoryRestUtil.createClassLoader(classpath.files)
         Class clientClass = ArtifactoryRestUtil.loadClass(classLoader, CLIENT_CLASS)
 		String endPoint = artifactoryRestExtension.url ? artifactoryRestExtension.url.call() : null;
 		String credentials = artifactoryRestExtension.credentials ? artifactoryRestExtension.credentials.call() : null;
