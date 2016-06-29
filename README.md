@@ -8,7 +8,7 @@ Gradle plugin for interacting with Artifactory's REST API.
 ```
 buildscript() {
  	repositories {
- 		mavenCentral()
+ 		jcenter()
  	}
  	dependencies {
  		classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: '0.0.4'
