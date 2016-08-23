@@ -1,3 +1,8 @@
+### Version 0.0.5 (8/23/16)
+* ADDED: task `FileList`
+* REFACTOR: bump version of gradle to 2.14.1
+* REFACTOR: bump version of artifactory-rest to 0.0.5
+
 ### Version 0.0.4 (6/29/16)
 * ADDED: `DeleteArtifact` gained optional property `failFast`.
 * ADDED: task `LatestVersionFromLayout`.

@@ -11,7 +11,7 @@ buildscript() {
  		jcenter()
  	}
  	dependencies {
- 		classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: '0.0.4'
+ 		classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: '0.0.5'
  	}
  }
 
