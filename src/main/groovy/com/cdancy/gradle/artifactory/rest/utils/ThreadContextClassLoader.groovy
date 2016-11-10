@@ -26,5 +26,10 @@ interface ThreadContextClassLoader {
 
     def newPayload(Object resource)
 
-    def newPromote(String promotedRepo, String image, String tag, boolean copy)
+    def newDockerPromote(String promotedRepo, String image, String tag, boolean copy)
+
+    def newBuildPromote(String status, String comment, String ciUser, String timestamp,
+                        boolean dryRun, String sourceRepo, String targetRepo, boolean copy,
+                        boolean artifacts, boolean dependencies, List<String> scopes,
+                        Map<String, List<String>> properties, boolean failFast)
 }

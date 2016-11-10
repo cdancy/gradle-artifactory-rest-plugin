@@ -23,7 +23,8 @@ import java.lang.reflect.Method
 
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
     public static final String PAYLOADS_CLASS = "org.jclouds.io.Payloads"
-    public static final String PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.Promote"
+    public static final String DOCKER_PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.Promote"
+    public static final String BUILD_PROMOTE_CLASS = "com.cdancy.artifactory.rest.options.PromoteBuildOptions"
     public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
@@ -63,9 +64,24 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         method.invoke(null, file);
     }
 
-    def newPromote(String promotedRepo, String image, String tag, boolean copy) {
-        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, PROMOTE_CLASS)
+    @Override
+    def newDockerPromote(String promotedRepo, String image, String tag, boolean copy) {
+        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, DOCKER_PROMOTE_CLASS)
         Method method = clazz.getMethod("create", String, String, String, boolean);
         method.invoke(null, promotedRepo, image, tag, copy);
+    }
+
+    @Override
+    def newBuildPromote(String status, String comment, String ciUser, String timestamp,
+                        boolean dryRun, String sourceRepo, String targetRepo, boolean copy,
+                        boolean artifacts, boolean dependencies, List<String> scopes,
+                        Map<String, List<String>> properties, boolean failFast) {
+        Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, BUILD_PROMOTE_CLASS)
+        Method method = clazz.getMethod("create", String, String, String, String,
+                boolean, String, String, boolean,
+                boolean, boolean, List, Map, boolean);
+        method.invoke(null, status, comment, ciUser, timestamp,
+                dryRun, sourceRepo, targetRepo, copy,
+                artifacts, dependencies, scopes, properties, failFast);
     }
 }

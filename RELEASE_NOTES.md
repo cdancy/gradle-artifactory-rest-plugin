@@ -1,3 +1,6 @@
+### Version 0.0.6 (11/10/16)
+* ADDED: task `Promote`
+
 ### Version 0.0.5 (8/23/16)
 * ADDED: task `FileList`
 * REFACTOR: bump version of gradle to 2.14.1
