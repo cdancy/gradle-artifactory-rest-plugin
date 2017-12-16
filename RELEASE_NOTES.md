@@ -1,4 +1,5 @@
-### Version 0.0.7 (TBA)
+### Version 0.0.7 (12/15/17)
+* REFACTOR: bump version of artifactory-rest to 0.0.9 and use `all` classifier
 
 ### Version 0.0.6 (11/10/16)
 * ADDED: task `FileList`
