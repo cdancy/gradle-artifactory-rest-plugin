@@ -36,45 +36,6 @@ ext.compatibilityVersion = '1.8'
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Artifactory REST client',
-                   'Implementation-Version': version,
-                   'Built-By': System.getProperty('user.name'),
-                   'Built-Date': new Date(),
-                   'Built-JDK': System.getProperty('java.version'),
-                   'Built-Gradle': gradle.gradleVersion
-    }
-}
-
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-Xlint:-options"]
 }
-
-artifactory {
-    contextUrl = artifactoryURL
-    publish {
-        repository {
-            repoKey = version.endsWith('-SNAPSHOT') ? snapshotRepository : releaseRepository
-            username = artifactoryUser
-            password = artifactoryPassword
-            mavenCompatible = true
-        }
-        defaults {
-            publications ('artifactoryJava')
-        }
-    }
-}
-
-publishing {
-    publications {
-        artifactoryJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact groovydocJar
-        }
-    }
-}
-
-
-

@@ -21,6 +21,21 @@ publishing {
     }
 }
 
+artifactory {
+    contextUrl = artifactoryURL
+    publish {
+        repository {
+            repoKey = version.endsWith('-SNAPSHOT') ? snapshotRepository : releaseRepository
+            username = artifactoryUser
+            password = artifactoryPassword
+            mavenCompatible = true
+        }
+        defaults {
+            publications ('mavenJava')
+        }
+    }
+}
+
 bintray {
 
     user = project.bintrayUsername
