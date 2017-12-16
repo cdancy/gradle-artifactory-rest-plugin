@@ -1,22 +1,28 @@
 
+
+[![Build Status](https://travis-ci.org/cdancy/gradle-artifactory-rest-plugin.svg?branch=master)](https://travis-ci.org/cdancy/gradle-artifactory-rest-plugin)
+[![codecov](https://codecov.io/gh/cdancy/gradle-artifactory-rest-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/cdancy/gradle-artifactory-rest-plugin)
+[![Download](https://api.bintray.com/packages/cdancy/gradle-plugins/gradle-artifactory-rest-plugin/images/download.svg) ](https://bintray.com/cdancy/gradle-plugins/gradle-artifactory-rest-plugin/_latestVersion)
+[![Stack Overflow](https://img.shields.io/badge/stack%20overflow-gradle&#8211;artifactory&#8211;rest&#8211;plugin-4183C4.svg)](https://stackoverflow.com/questions/tagged/gradle+artifactory+rest+plugin)
+
 # gradle-artifactory-rest-plugin
 
-Gradle plugin for interacting with Artifactory's REST API.
+Gradle plugin, based on jclouds, for interacting with Artifactory's REST API.
 
 ## Setup
 
 ```
 buildscript() {
- 	repositories {
- 		jcenter()
- 	}
- 	dependencies {
- 		classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: '0.0.5'
- 	}
- }
+    repositories {
+ 		     jcenter()
+ 	  }
+ 	  dependencies {
+ 		    classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: 'X.Y.Z'
+ 	  }
+}
 
- apply plugin: 'gradle-artifactory-rest-plugin'
- ```
+apply plugin: 'gradle-artifactory-rest-plugin'
+```
 ## Extension
 
 The `artifactoryRest` extension is provided to define the `endpoint` and `credentials` for connecting to an Artifactory instance.
@@ -25,8 +31,8 @@ the various means of setting the aforementioned properties noted in the `Credent
 
 ```
  artifactoryRest {
- 	url { "https://localhost:8081/artifactory" }
- 	credentials { "admin:password" }
+     url { "https://localhost:8081/artifactory" }
+     credentials { "admin:password" }
  }
 ```
 
