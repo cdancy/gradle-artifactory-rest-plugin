@@ -27,7 +27,7 @@ import org.gradle.api.artifacts.Configuration
  */
 class ArtifactoryRestPlugin implements Plugin<Project> {
     public static final String ARTIFACTORY_CONFIGURATION_NAME = 'artifactoryRest'
-    public static final String ARTIFACTORY_REST_DEFAULT_VERSION = '0.0.5'
+    public static final String ARTIFACTORY_REST_DEFAULT_VERSION = '0.0.9'
     public static final String EXTENSION_NAME = 'artifactoryRest'
     public static final String DEFAULT_TASK_GROUP = 'ArtifactoryRest'
 
@@ -57,7 +57,11 @@ class ArtifactoryRestPlugin implements Plugin<Project> {
         }
         Configuration configuration = project.configurations.getByName(ARTIFACTORY_CONFIGURATION_NAME)
         configuration.defaultDependencies { dependencies ->
-            dependencies.add(project.dependencies.create("com.cdancy:artifactory-rest:$ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION"))
+            def artifactoryRestGAVC = "com.cdancy:artifactory-rest:$ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION:all"
+            def artifactoryRestDep = project.dependencies.create(artifactoryRestGAVC) {
+                transitive = false
+            }
+            dependencies.add(artifactoryRestDep)
             dependencies.add(project.dependencies.create('org.slf4j:slf4j-simple:1.7.5'))
         }
         configuration
