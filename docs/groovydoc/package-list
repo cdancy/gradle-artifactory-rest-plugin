@@ -1,7 +1,6 @@
 com.cdancy.gradle.artifactory.rest
 com.cdancy.gradle.artifactory.rest.tasks
 com.cdancy.gradle.artifactory.rest.tasks.artifact
-com.cdancy.gradle.artifactory.rest.tasks.build
 com.cdancy.gradle.artifactory.rest.tasks.docker
 com.cdancy.gradle.artifactory.rest.tasks.search
 com.cdancy.gradle.artifactory.rest.tasks.storage
