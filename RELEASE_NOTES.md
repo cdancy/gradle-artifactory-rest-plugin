@@ -1,5 +1,9 @@
-### Version 0.0.5 (8/23/16)
+### Version 0.0.7 (TBA)
+
+### Version 0.0.6 (11/10/16)
 * ADDED: task `FileList`
+
+### Version 0.0.5 (8/23/16)
 * REFACTOR: bump version of gradle to 2.14.1
 * REFACTOR: bump version of artifactory-rest to 0.0.5
 
