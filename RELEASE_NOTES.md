@@ -1,3 +1,5 @@
+### Version 0.0.9 (TBA)
+
 ### Version 0.0.8 (12/20/17)
 * REFACTOR: Bump version of artifactory-rest to 0.0.10
 * FIX: malformed base package structure when referencing the 'all' jar
