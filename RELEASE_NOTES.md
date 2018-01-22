@@ -1,3 +1,5 @@
+### Version 0.0.10 (TBA)
+
 ### Version 0.0.9 (1/22/18)
 * ADDED: Bump `artifactory-rest` library to `0.9.0` - [PR 1](https://github.com/cdancy/gradle-artifactory-rest-plugin/pull/1)
 * ADDED: Exposed jclouds `overrides` options through extension - [PR 2](https://github.com/cdancy/gradle-artifactory-rest-plugin/pull/2)
