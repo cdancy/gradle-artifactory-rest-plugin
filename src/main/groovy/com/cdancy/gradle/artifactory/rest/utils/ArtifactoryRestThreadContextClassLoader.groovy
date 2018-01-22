@@ -16,6 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.utils
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestExtension
+import java.lang.reflect.Constructor
 import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
 
@@ -24,7 +25,7 @@ import java.lang.reflect.Method
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
     public static final String PAYLOADS_CLASS = "com.cdancy.artifactory.rest.shaded.org.jclouds.io.Payloads"
     public static final String PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.Promote"
-    public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient"
+    public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient\$Builder"
 
     private final ArtifactoryRestExtension artifactoryRestExtension
     private final FileCollection classpath
@@ -49,11 +50,25 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
     }
 	
     private def generateClient() {
-        ClassLoader classLoader = ArtifactoryRestUtil.createClassLoader(classpath.files)
-        Class clientClass = ArtifactoryRestUtil.loadClass(classLoader, CLIENT_CLASS)
-		String endPoint = artifactoryRestExtension.url ? artifactoryRestExtension.url.call() : null;
-		String credentials = artifactoryRestExtension.credentials ? artifactoryRestExtension.credentials.call() : null;
-		clientClass.getConstructor(String, String).newInstance(endPoint,credentials)
+
+        // These can be null but if so then System Properties and
+        // Environment Variables will be searched instead.
+        final String foundEndPoint = artifactoryRestExtension.url
+            ? artifactoryRestExtension.url.call()
+            : null
+        final String foundCredentials = artifactoryRestExtension.credentials
+            ? artifactoryRestExtension.credentials.call()
+            : null
+
+        final ClassLoader classLoader = ArtifactoryRestUtil.createClassLoader(classpath.files)
+        final Class clientClass = ArtifactoryRestUtil.loadClass(classLoader, CLIENT_CLASS)
+        final Constructor<?> ctor = clientClass.getDeclaredConstructors()[0]
+        ctor.setAccessible(true)
+
+        return ctor.newInstance()
+            .endPoint(foundEndPoint)
+            .credentials(foundCredentials)
+            .build();        
     }
 
     @Override
