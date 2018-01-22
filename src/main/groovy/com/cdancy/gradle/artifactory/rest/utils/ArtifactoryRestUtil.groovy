@@ -12,27 +12,37 @@ final class ArtifactoryRestUtil {
         list.toArray(Array.newInstance(clazz, 0))
     }
 
-	static Class loadClass(ClassLoader classLoader, String className) {
-		classLoader.loadClass(className)
-	}
-	
-	/**
-	 * Creates the classloader with the given classpath files.
-	 *
-	 * @param classpathFiles Classpath files
-	 * @return URL classloader
-	 */
-	static URLClassLoader createClassLoader(Set<File> classpathFiles) {
-		new URLClassLoader(toURLArray(classpathFiles), ClassLoader.systemClassLoader.parent)
-	}
-	
-	/**
-	 * Creates URL array from a set of files.
-	 *
-	 * @param files Files
-	 * @return URL array
-	 */
-	static URL[] toURLArray(Set<File> files) {
-		files.collect { file -> file.toURI().toURL() } as URL[]
-	}
+    static Class loadClass(ClassLoader classLoader, String className) {
+        classLoader.loadClass(className)
+    }
+
+    /**
+     * Creates the classloader with the given classpath files.
+     *
+     * @param classpathFiles Classpath files
+     * @return URL classloader
+     */
+    static URLClassLoader createClassLoader(Set<File> classpathFiles) {
+        new URLClassLoader(toURLArray(classpathFiles), ClassLoader.systemClassLoader.parent)
+    }
+
+    /**
+     * Creates URL array from a set of files.
+     *
+     * @param files Files
+     * @return URL array
+     */
+    static URL[] toURLArray(Set<File> files) {
+        files.collect { file -> file.toURI().toURL() } as URL[]
+    }
+
+    static Map<String, String> gstringMapToStringMap(Map<String, String> gStringMap) {
+        final Map<String, String> convertedMap = new HashMap<>();
+        if (gStringMap) {
+            gStringMap.each { k,v ->
+                convertedMap.put(k.toString(), v.toString())
+            }
+        }
+        convertedMap
+    }
 }

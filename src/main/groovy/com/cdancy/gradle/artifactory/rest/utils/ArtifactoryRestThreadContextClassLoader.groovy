@@ -59,6 +59,9 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         final String foundCredentials = artifactoryRestExtension.credentials
             ? artifactoryRestExtension.credentials.call()
             : null
+        final Map<String, String> possibleOverrides = ArtifactoryRestUtil.gstringMapToStringMap(artifactoryRestExtension.overrides)
+        final Properties foundOverrides = new Properties();
+        foundOverrides.putAll(possibleOverrides);
 
         final ClassLoader classLoader = ArtifactoryRestUtil.createClassLoader(classpath.files)
         final Class clientClass = ArtifactoryRestUtil.loadClass(classLoader, CLIENT_CLASS)
@@ -68,6 +71,7 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         return ctor.newInstance()
             .endPoint(foundEndPoint)
             .credentials(foundCredentials)
+            .overrides(foundOverrides)
             .build();        
     }
 
