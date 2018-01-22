@@ -1,4 +1,5 @@
 ### Version 0.0.9 (TBA)
+* ADDED: Bump `artifactory-rest` library to `0.9.0` - [PR 1](https://github.com/cdancy/gradle-artifactory-rest-plugin/pull/1)
 
 ### Version 0.0.8 (12/20/17)
 * REFACTOR: Bump version of artifactory-rest to 0.0.10
