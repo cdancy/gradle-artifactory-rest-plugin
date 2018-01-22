@@ -23,5 +23,8 @@ class ArtifactoryRestExtension {
     Closure<String> url
 
     @Nullable
-	Closure<String> credentials
+    Closure<String> credentials
+
+    @Nullable
+    Map<String, String> overrides = [:]
 }
