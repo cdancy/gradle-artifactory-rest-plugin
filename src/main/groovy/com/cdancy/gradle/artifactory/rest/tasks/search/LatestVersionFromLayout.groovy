@@ -16,10 +16,19 @@
 package com.cdancy.gradle.artifactory.rest.tasks.search
 
 import com.cdancy.gradle.artifactory.rest.tasks.GAVCAware
+import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 class LatestVersionFromLayout extends GAVCAware {
+
+    @Input
+    @Optional
+    long sleepTime = 5000
+
+    @Input
+    @Optional
+    int retries = 5
 
     @Input
     @Optional
@@ -29,10 +38,33 @@ class LatestVersionFromLayout extends GAVCAware {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
-                artifactName().toString(),
-                versionName().toString(),
-                repos ? repos : null)
+
+        // check sanity of passed sleep/retry options
+        if (sleepTime < 0) {
+            throw new GradleException("Parameter sleepTime can NOT be less than 0");
+        }
+        if (retries < 0) {
+            throw new GradleException("Parameter retries can NOT be less than 0");
+        }
+
+        int localRetries = retries
+        while (localRetries >= 0) {
+            try {
+                version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
+                        artifactName().toString(),
+                        versionName().toString(),
+                        repos ? repos : null)
+                break
+            } catch (Exception e) {
+                if (localRetries > 0) {
+                    logger.quiet "Failed querying for latestVersionFromLayout: message=${e.message}"
+                    sleep(sleepTime)
+                } else if (localRetries == 0) {
+                    throw e
+                }
+                localRetries--
+            }
+        }
     }
 
     String version() { version }
