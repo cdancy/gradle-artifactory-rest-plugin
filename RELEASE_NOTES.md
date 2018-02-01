@@ -1,4 +1,5 @@
 ### Version 0.0.10 (TBA)
+* ADDED: basic retry logic added for 'latestVersionFromLayout' endpoint as it appears to be special in some way and fails with cryptographic exceptions randomly.
 
 ### Version 0.0.9 (1/22/18)
 * ADDED: Bump `artifactory-rest` library to `0.9.0` - [PR 1](https://github.com/cdancy/gradle-artifactory-rest-plugin/pull/1)
