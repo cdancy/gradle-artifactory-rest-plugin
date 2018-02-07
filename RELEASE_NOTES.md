@@ -1,4 +1,7 @@
-### Version 0.0.11 (TBA)
+### Version 0.0.12 (TBA)
+
+### Version 0.0.11 (2/6/18)
+* FIX: bug fix for potential ExceptionInInitializerError
 
 ### Version 0.0.10 (2/1/18)
 * ADDED: basic retry logic added for 'latestVersionFromLayout' endpoint as it appears to be special in some way and fails with cryptographic exceptions randomly.
