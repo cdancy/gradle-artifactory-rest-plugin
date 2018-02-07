@@ -24,7 +24,7 @@ class LatestVersionFromLayout extends GAVCAware {
 
     @Input
     @Optional
-    long sleepTime = 5000
+    long sleepTime = 10000
 
     @Input
     @Optional
@@ -49,18 +49,25 @@ class LatestVersionFromLayout extends GAVCAware {
 
         int localRetries = retries
         while (localRetries >= 0) {
+            def someExceptionType
             try {
                 version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
                         artifactName().toString(),
                         versionName().toString(),
                         repos ? repos : null)
                 break
-            } catch (Exception e) {
+            } catch (ExceptionInInitializerError error) {
+                someExceptionType = error
+            } catch (Exception | Error exception) {
+                someExceptionType = exception
+            }
+            
+            if (someExceptionType) {
                 if (localRetries > 0) {
-                    logger.quiet "Failed querying for latestVersionFromLayout: message=${e.message}"
+                    logger.quiet "Failed querying for latestVersionFromLayout: message=${someExceptionType.message}"
                     sleep(sleepTime)
                 } else if (localRetries == 0) {
-                    throw e
+                    throw someExceptionType
                 }
                 localRetries--
             }
