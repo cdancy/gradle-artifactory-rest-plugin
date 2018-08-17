@@ -1,4 +1,6 @@
-### Version 0.0.12 (TBA)
+### Version 0.0.12 (2/17/18)
+* ADDED: bumped artifactory-rest to `0.9.2`
+* FIX: bug in `PromoteImage` task where incorrect class was being referenced.
 
 ### Version 0.0.11 (2/6/18)
 * FIX: bug fix for potential ExceptionInInitializerError
