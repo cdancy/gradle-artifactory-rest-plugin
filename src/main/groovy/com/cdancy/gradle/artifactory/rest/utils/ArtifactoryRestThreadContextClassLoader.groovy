@@ -24,7 +24,7 @@ import java.lang.reflect.Method
 
 class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoader {
     public static final String PAYLOADS_CLASS = "com.cdancy.artifactory.rest.shaded.org.jclouds.io.Payloads"
-    public static final String PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.Promote"
+    public static final String PROMOTE_CLASS = "com.cdancy.artifactory.rest.domain.docker.PromoteImage"
     public static final String CLIENT_CLASS = "com.cdancy.artifactory.rest.ArtifactoryClient\$Builder"
 
     private final ArtifactoryRestExtension artifactoryRestExtension

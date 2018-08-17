@@ -15,11 +15,11 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.docker
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
 
-class Promote extends AbstractArtifactoryRestTask {
+class Promote extends ArtifactAware {
 
     @Input
     Closure<String> promotedRepo
