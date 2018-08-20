@@ -1,4 +1,7 @@
-### Version 0.0.12 (2/17/18)
+### Version 0.0.13 (8/20/18)
+* ADDED: Bump `artifactory-rest` client to `0.9.3`.
+
+### Version 0.0.12 (8/17/18)
 * ADDED: bumped artifactory-rest to `0.9.2`
 * FIX: bug in `PromoteImage` task where incorrect class was being referenced.
 
