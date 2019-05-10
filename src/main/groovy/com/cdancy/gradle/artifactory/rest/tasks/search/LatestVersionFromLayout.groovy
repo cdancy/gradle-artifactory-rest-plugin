@@ -34,6 +34,11 @@ class LatestVersionFromLayout extends GAVCAware {
     @Optional
     List<String> repos = []
 
+    // remote=1 to query mirror artifactory
+    @Input
+    @Optional
+    String remote
+
     private String version
 
     @Override
@@ -54,6 +59,7 @@ class LatestVersionFromLayout extends GAVCAware {
                 version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
                         artifactName().toString(),
                         versionName().toString(),
+                        remote
                         repos ? repos : null)
                 break
             } catch (ExceptionInInitializerError error) {
