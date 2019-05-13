@@ -27,7 +27,7 @@ import org.gradle.api.artifacts.Configuration
  */
 class ArtifactoryRestPlugin implements Plugin<Project> {
     public static final String ARTIFACTORY_CONFIGURATION_NAME = 'artifactoryRest'
-    public static final String ARTIFACTORY_REST_DEFAULT_VERSION = '0.9.4'
+    public static final String ARTIFACTORY_REST_DEFAULT_VERSION = '0.9.5'
     public static final String EXTENSION_NAME = 'artifactoryRest'
     public static final String DEFAULT_TASK_GROUP = 'ArtifactoryRest'
 

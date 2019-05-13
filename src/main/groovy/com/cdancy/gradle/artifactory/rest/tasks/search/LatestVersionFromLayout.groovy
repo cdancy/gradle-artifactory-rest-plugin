@@ -43,7 +43,6 @@ class LatestVersionFromLayout extends GAVCAware {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-
         // check sanity of passed sleep/retry options
         if (sleepTime < 0) {
             throw new GradleException("Parameter sleepTime can NOT be less than 0");
@@ -59,7 +58,7 @@ class LatestVersionFromLayout extends GAVCAware {
                 version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
                         artifactName().toString(),
                         versionName().toString(),
-                        remote
+                        remote,
                         repos ? repos : null)
                 break
             } catch (ExceptionInInitializerError error) {
