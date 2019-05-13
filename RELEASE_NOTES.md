@@ -1,4 +1,7 @@
-### Version 0.0.15 (TBA)
+### Version 0.0.16 (TBA)
+
+### Version 0.0.15 (5/13/19)
+* ADDED: LatestVersionFromLayout task gained optional property 'remote'.
 
 ### Version 0.0.14 (8/20/18)
 * BUGFIX: Bump `artifactory-rest` client to `0.9.4`
