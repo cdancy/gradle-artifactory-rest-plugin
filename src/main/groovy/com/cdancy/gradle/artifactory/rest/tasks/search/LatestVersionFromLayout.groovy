@@ -58,7 +58,7 @@ class LatestVersionFromLayout extends GAVCAware {
                 version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
                         artifactName().toString(),
                         versionName().toString(),
-                        remote,
+                        remote ? remote.toString() : null,
                         repos ? repos : null)
                 break
             } catch (ExceptionInInitializerError error) {
