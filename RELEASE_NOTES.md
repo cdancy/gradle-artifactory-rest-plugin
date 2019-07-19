@@ -1,4 +1,5 @@
-### Version 0.0.15 (TBA)
+### Version 0.0.15 (7/19/19)
+* FIX: Change setProperties logging to debug level
 
 ### Version 0.0.14 (8/20/18)
 * BUGFIX: Bump `artifactory-rest` client to `0.9.4`

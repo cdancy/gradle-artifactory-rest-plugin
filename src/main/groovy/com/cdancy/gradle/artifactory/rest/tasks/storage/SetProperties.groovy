@@ -46,7 +46,7 @@ class SetProperties extends ArtifactAware {
                     v.each { it ->
                         boolean success = api.storageApi().setItemProperties(k.toString(), it.toString(), gstringMapToStringMap(properties))
                         if (success) {
-                            logger.quiet("Properties ${properties} set @ ${k}:${it}")
+                            logger.debug("Properties ${properties} set @ ${k}:${it}")
                         } else {
                             throw new GradleException("Could not successfully set properties '${properties}' @ " +
                                     "${k}:${it}")
