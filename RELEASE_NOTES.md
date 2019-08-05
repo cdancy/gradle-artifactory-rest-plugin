@@ -1,3 +1,5 @@
+### Version 0.0.17 (TBA)
+
 ### Version 0.0.16 (8/05/19)
 * FIX: Change setProperties logging to debug level
 
