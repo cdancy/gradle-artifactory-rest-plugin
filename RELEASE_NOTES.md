@@ -1,4 +1,5 @@
-### Version 0.0.16 (TBA)
+### Version 0.0.16 (8/05/19)
+* FIX: Change setProperties logging to debug level
 
 ### Version 0.0.15 (5/13/19)
 * ADDED: LatestVersionFromLayout task gained optional property 'remote'.
