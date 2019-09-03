@@ -50,7 +50,7 @@ class SetProperties extends ArtifactAware {
                     v.each { it ->
                         boolean success = false
                         int retriesLeft = retries
-                        while (!(success = setProperty(api, k.toString(), it.toString())) && (retriesLeft > -1)) {
+                        while (!(success = setProperty(api, k.toString(), it.toString())) && (retriesLeft > 0)) {
                             logger.debug("Could not successfully set properties '${properties}' @ " +
                                 "${repo}:${path}, will retry after ${requestInterval}ms")
                             retriesLeft -= 1
