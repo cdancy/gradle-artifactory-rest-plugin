@@ -1,4 +1,5 @@
 ### Version 0.0.17 (TBA)
+* ADDED: SetProperties task can be setup to retry using `retries` task property
 
 ### Version 0.0.16 (8/05/19)
 * FIX: Change setProperties logging to debug level
