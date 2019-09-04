@@ -21,6 +21,17 @@ class SetPropertiesTest extends Specification {
         1 * storageApi.setItemProperties('test-repo', 'test/artifact/path/for.jar', _) >> true
     }
 
+    def 'sets properties fails'() {
+        given:
+        storageApi.setItemProperties('test-repo', 'test/artifact/path/for.jar', _) >> false
+
+        when:
+        setPropertiesTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        thrown(GradleException)
+    }
+
     def 'sets properties with retry'() {
         given:
         setPropertiesTask.retries = 1
@@ -32,7 +43,7 @@ class SetPropertiesTest extends Specification {
         2 * storageApi.setItemProperties('test-repo', 'test/artifact/path/for.jar', _) >> false >> true
     }
 
-    def 'sets properties fails wit hretry'() {
+    def 'sets properties fails with retry'() {
         given:
         setPropertiesTask.retries = 1
         storageApi.setItemProperties('test-repo', 'test/artifact/path/for.jar', _) >> false
