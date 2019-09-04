@@ -1,4 +1,4 @@
-### Version 0.0.17 (TBA)
+### Version 0.0.17 (9/4/19)
 * ADDED: SetProperties task can be setup to retry using `retries` task property
 
 ### Version 0.0.16 (8/05/19)
