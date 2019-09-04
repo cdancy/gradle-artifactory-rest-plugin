@@ -71,7 +71,7 @@ class SetProperties extends ArtifactAware {
         }
     }
 
-    boolean setProperty(api, repo, path) {
+    protected boolean setProperty(api, repo, path) {
         try {
             if (api.storageApi().setItemProperties(repo, path, gstringMapToStringMap(properties))) {
                 return true
