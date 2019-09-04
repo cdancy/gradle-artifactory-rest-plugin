@@ -31,7 +31,11 @@ class SetProperties extends ArtifactAware {
 
     @Input
     @Optional
-    Map<String, List<String>> artifacts = new HashMap<>();
+    Map<String, List<String>> artifacts = new HashMap<>()
+
+    @Input
+    @Optional
+    int retries = 0
 
     @Override
     void runRemoteCommand(artifactoryClient) {
@@ -44,12 +48,17 @@ class SetProperties extends ArtifactAware {
                 def api = artifactoryClient.api()
                 artifacts.each { k, v ->
                     v.each { it ->
-                        boolean success = api.storageApi().setItemProperties(k.toString(), it.toString(), gstringMapToStringMap(properties))
-                        if (success) {
-                            logger.debug("Properties ${properties} set @ ${k}:${it}")
-                        } else {
+                        boolean success = false
+                        int retriesLeft = retries
+                        while (!(success = setProperty(api, k.toString(), it.toString())) && (retriesLeft > 0)) {
+                            logger.debug("Could not successfully set properties '${properties}' @ " +
+                                "${repo}:${path}, will retry after ${requestInterval}ms")
+                            retriesLeft -= 1
+                            sleep(requestInterval)
+                        }
+                        if (!success) {
                             throw new GradleException("Could not successfully set properties '${properties}' @ " +
-                                    "${k}:${it}")
+                                "${k}:${it}")
                         }
                         sleep(requestInterval)
                     }
@@ -59,6 +68,22 @@ class SetProperties extends ArtifactAware {
             }
         } else {
             logger.quiet "`properties` are empty. Nothing to do..."
+        }
+    }
+
+    protected boolean setProperty(api, repo, path) {
+        try {
+            if (api.storageApi().setItemProperties(repo, path, gstringMapToStringMap(properties))) {
+                return true
+            } else {
+                logger.debug("Could not successfully set properties '${properties}' @ " +
+                    "${repo}:${path}")
+                return false
+            }
+        } catch (e) {
+            logger.debug("Could not successfully set properties '${properties}' @ " +
+                "${repo}:${path}", e)
+            return false
         }
     }
 
