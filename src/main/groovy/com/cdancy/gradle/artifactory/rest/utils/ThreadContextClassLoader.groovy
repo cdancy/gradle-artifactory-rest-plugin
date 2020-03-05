@@ -16,7 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.utils
 
 interface ThreadContextClassLoader {
-	
+
     /**
      * Performs the closure with thread context classloader.
      *
@@ -26,5 +26,5 @@ interface ThreadContextClassLoader {
 
     def newPayload(Object resource)
 
-    def newPromote(String promotedRepo, String image, String tag, boolean copy)
+    def newPromote(String promotedRepo, String image, String tag, String targetTag, boolean copy)
 }

@@ -48,7 +48,7 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         closure.delegate = this
         closure(artifactoryClient)
     }
-	
+
     private def generateClient() {
 
         // These can be null but if so then System Properties and
@@ -72,7 +72,7 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
             .endPoint(foundEndPoint)
             .credentials(foundCredentials)
             .overrides(foundOverrides)
-            .build();        
+            .build();
     }
 
     @Override
@@ -82,9 +82,10 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
         method.invoke(null, file);
     }
 
-    def newPromote(String promotedRepo, String image, String tag, boolean copy) {
+    @Override
+    def newPromote(String promotedRepo, String image, String tag, String targetTag, boolean copy) {
         Class clazz = ArtifactoryRestUtil.loadClass(artifactoryClient.class.classLoader, PROMOTE_CLASS)
-        Method method = clazz.getMethod("create", String, String, String, boolean);
-        method.invoke(null, promotedRepo, image, tag, copy);
+        Method method = clazz.getMethod("create", String, String, String, String, boolean);
+        method.invoke(null, promotedRepo, image, tag, targetTag, copy);
     }
 }
