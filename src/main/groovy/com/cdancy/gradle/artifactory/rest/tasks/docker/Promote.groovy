@@ -18,6 +18,7 @@ package com.cdancy.gradle.artifactory.rest.tasks.docker
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 
 class Promote extends ArtifactAware {
 
@@ -31,12 +32,16 @@ class Promote extends ArtifactAware {
     Closure<String> tag
 
     @Input
+    @Optional
+    Closure<String> targetTag
+
+    @Input
     boolean copy
 
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().dockerApi()
-        def dockerPromote = threadContextClassLoader.newPromote(promotedRepo(), image(), tag(), copy)
+        def dockerPromote = threadContextClassLoader.newPromote(promotedRepo(), image(), tag(), targetTag(), copy)
         boolean success = api.promote(repo().toString(), dockerPromote)
         if (success) {
             logger.quiet("Successfully promoted image @ ${repo()}/${image()}:${tag()} to ${promotedRepo()}")
@@ -69,6 +74,15 @@ class Promote extends ArtifactAware {
             var
         } else {
             throw new GradleException("tag does not resolve to a valid String: tag=" + var)
+        }
+    }
+
+    private String targetTag() {
+        String var = targetTag ? targetTag.call() : null
+        if (!var || var?.trim()) {
+            var
+        } else {
+            throw new GradleException("targetTag does not resolve to a valid String: tag=" + var)
         }
     }
 }
