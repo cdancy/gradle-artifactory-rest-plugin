@@ -1,3 +1,5 @@
+### Version 0.0.19 (TBA)
+
 ### Version 0.0.18 (3/5/20)
 * ADDED: Expose `targetTag` on `Promote` task.
 
