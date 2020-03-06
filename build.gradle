@@ -31,7 +31,7 @@ dependencies {
     }
 
     //Make sure this matches ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION
-    testRuntime 'com.cdancy:artifactory-rest:0.9.8:all'
+    testCompile 'com.cdancy:artifactory-rest:0.9.8:all'
 }
 
 ext.compatibilityVersion = '1.8'

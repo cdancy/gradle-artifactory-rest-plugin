@@ -30,7 +30,7 @@ class DeleteProperties extends ArtifactAware {
         def props = properties.orNull
         if (props && !props.empty) {
             def api = artifactoryClient.api()
-            boolean success = api.storageApi().deleteItemProperties(repo().toString(), artifactPath().toString(), gstringMapToStringMap(props))
+            boolean success = api.storageApi().deleteItemProperties(repo().toString(), artifactPath().toString(), gstringListToStringList(props))
             if (success) {
                 logger.quiet("Successfully deleted properties @ ${repo()}:${artifactPath()}")
             } else {

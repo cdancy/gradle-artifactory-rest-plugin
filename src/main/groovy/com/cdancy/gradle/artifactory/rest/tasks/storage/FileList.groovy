@@ -52,5 +52,5 @@ class FileList extends ArtifactAware {
         logger.quiet "Found ${fileList.files().size()} files"
     }
 
-    public fileList() { fileList }
+    def fileList() { fileList }
 }
