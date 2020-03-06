@@ -45,11 +45,11 @@ class LatestVersionFromLayout extends GAVCAware {
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        def sleep = sleepTime.get()
+        def sleepTimeMS = sleepTime.get()
         def retry = retries.get()
 
         // check sanity of passed sleep/retry options
-        if (sleep < 0) {
+        if (sleepTimeMS < 0) {
             throw new GradleException("Parameter sleepTime can NOT be less than 0");
         }
         if (retry < 0) {
@@ -75,7 +75,7 @@ class LatestVersionFromLayout extends GAVCAware {
             if (someExceptionType) {
                 if (localRetries > 0) {
                     logger.quiet "Failed querying for latestVersionFromLayout: message=${someExceptionType.message}"
-                    sleep(sleep)
+                    sleep(sleepTimeMS)
                 } else if (localRetries == 0) {
                     throw someExceptionType
                 }
