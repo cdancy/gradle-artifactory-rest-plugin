@@ -20,6 +20,8 @@ import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
+//TODO: There is no retrieveArtifact API in the artifactory-rest lib class 'ArtifactApi'
+//      Should probably remove this task!
 class RetrieveArtifact extends ArtifactAware {
 
     @Optional
