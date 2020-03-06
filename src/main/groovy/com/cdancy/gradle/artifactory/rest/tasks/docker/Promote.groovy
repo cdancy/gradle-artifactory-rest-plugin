@@ -17,31 +17,32 @@ package com.cdancy.gradle.artifactory.rest.tasks.docker
 
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 class Promote extends ArtifactAware {
 
     @Input
-    Closure<String> promotedRepo
+    final Property<String> promotedRepo = project.objects.property(String)
 
     @Input
-    Closure<String> image
+    final Property<String> image = project.objects.property(String)
 
     @Input
-    Closure<String> tag
+    final Property<String> tag = project.objects.property(String)
 
     @Input
     @Optional
-    Closure<String> targetTag
+    final Property<String> targetTag = project.objects.property(String)
 
     @Input
-    boolean copy
+    final Property<Boolean> copy = project.objects.property(Boolean).convention(false)
 
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().dockerApi()
-        def dockerPromote = threadContextClassLoader.newPromote(promotedRepo(), image(), tag(), targetTag(), copy)
+        def dockerPromote = threadContextClassLoader.newPromote(promotedRepo(), image(), tag(), targetTag(), copy.get())
         boolean success = api.promote(repo().toString(), dockerPromote)
         if (success) {
             logger.quiet("Successfully promoted image @ ${repo()}/${image()}:${tag()} to ${promotedRepo()}")
@@ -51,7 +52,7 @@ class Promote extends ArtifactAware {
     }
 
     private String promotedRepo() {
-        String var = promotedRepo ? promotedRepo.call() : null
+        String var = promotedRepo.orNull
         if (var?.trim()) {
             var
         } else {
@@ -60,7 +61,7 @@ class Promote extends ArtifactAware {
     }
 
     private String image() {
-        String var = image ? image.call() : null
+        String var = image.orNull
         if (var?.trim()) {
             var
         } else {
@@ -69,7 +70,7 @@ class Promote extends ArtifactAware {
     }
 
     private String tag() {
-        String var = tag ? tag.call() : null
+        String var = tag.orNull
         if (var?.trim()) {
             var
         } else {
@@ -78,7 +79,7 @@ class Promote extends ArtifactAware {
     }
 
     private String targetTag() {
-        String var = targetTag ? targetTag.call() : null
+        String var = targetTag.orNull
         if (!var || var?.trim()) {
             var
         } else {

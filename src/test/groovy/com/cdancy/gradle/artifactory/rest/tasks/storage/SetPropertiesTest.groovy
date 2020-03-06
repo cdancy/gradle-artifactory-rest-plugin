@@ -61,7 +61,7 @@ class SetPropertiesTest extends Specification {
         setPropertiesTask = project.tasks.create('setProperties', SetProperties) {
             properties = ['test-name': ['test-value']]
             artifact('test-repo', 'test/artifact/path/for.jar')
-            requestInterval = 1
+            requestInterval = 1L
         }
 
         artifactoryClient = Mock()

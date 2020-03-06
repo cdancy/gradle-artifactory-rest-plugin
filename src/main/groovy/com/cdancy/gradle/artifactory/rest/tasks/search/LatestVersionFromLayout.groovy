@@ -17,6 +17,8 @@ package com.cdancy.gradle.artifactory.rest.tasks.search
 
 import com.cdancy.gradle.artifactory.rest.tasks.GAVCAware
 import org.gradle.api.GradleException
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -24,53 +26,56 @@ class LatestVersionFromLayout extends GAVCAware {
 
     @Input
     @Optional
-    long sleepTime = 10000
+    final Property<Long> sleepTime = project.objects.property(Long).convention(10000L)
 
     @Input
     @Optional
-    int retries = 5
+    final Property<Integer> retries = project.objects.property(Integer).convention(5)
 
     @Input
     @Optional
-    List<String> repos = []
+    final ListProperty<String> repos = project.objects.listProperty(String).convention([])
 
     // remote=1 to query mirror artifactory
     @Input
     @Optional
-    String remote
+    final Property<String> remote = project.objects.property(String)
 
     private String version
 
     @Override
     void runRemoteCommand(artifactoryClient) {
+        def sleep = sleepTime.get()
+        def retry = retries.get()
+
         // check sanity of passed sleep/retry options
-        if (sleepTime < 0) {
+        if (sleep < 0) {
             throw new GradleException("Parameter sleepTime can NOT be less than 0");
         }
-        if (retries < 0) {
+        if (retry < 0) {
             throw new GradleException("Parameter retries can NOT be less than 0");
         }
 
-        int localRetries = retries
+        int localRetries = retry
         while (localRetries >= 0) {
             def someExceptionType
             try {
                 version = artifactoryClient.api().searchApi().latestVersionWithLayout(groupName().toString(),
-                        artifactName().toString(),
-                        versionName().toString(),
-                        remote ? remote.toString() : null,
-                        repos ? repos : null)
+                    artifactName().toString(),
+                    versionName().toString(),
+                    remote.orNull,
+                    repos.orNull)
                 break
             } catch (ExceptionInInitializerError error) {
                 someExceptionType = error
             } catch (Exception | Error exception) {
                 someExceptionType = exception
             }
-            
+
             if (someExceptionType) {
                 if (localRetries > 0) {
                     logger.quiet "Failed querying for latestVersionFromLayout: message=${someExceptionType.message}"
-                    sleep(sleepTime)
+                    sleep(sleep)
                 } else if (localRetries == 0) {
                     throw someExceptionType
                 }

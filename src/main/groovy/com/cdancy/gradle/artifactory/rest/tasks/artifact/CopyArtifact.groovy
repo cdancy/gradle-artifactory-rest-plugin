@@ -16,6 +16,8 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -23,21 +25,22 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
 
     @Input
     @Optional
-    long requestInterval = 1000
+    final Property<Long> requestInterval = project.objects.property(Long).convention(1000L)
 
     @Input
     @Optional
-    Map<String, ArtifactToCopy> artifacts = new HashMap<>()
+    final MapProperty<String, ArtifactToCopy> artifacts = project.objects.mapProperty(String, ArtifactToCopy).convention([:])
 
     private List<?> requestStatus = []
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        if (artifacts.size() > 0) {
+        def artifactMap = artifacts.orNull
+        if (artifactMap && !artifactMap.isEmpty()) {
             def api = artifactoryClient.api()
-            def outerRequestInterval = this.requestInterval
+            def outerRequestInterval = this.requestInterval.get()
             def outerRequestStatus = this.requestStatus
-            artifacts.each { k, v ->
+            artifactMap.each { k, v ->
 
                 def innerRequestInterval = outerRequestInterval
                 def innerRequestStatus = outerRequestStatus
@@ -46,8 +49,8 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
                     String completeSourceRepo = (it.sourceRepo.toString() + ":" + it.sourcePath.toString())
                     String completeTargetRepo = (it.targetRepo.toString() + "/" + it.targetPath.toString()).replaceAll("//", "/")
                     def status = api.artifactApi().copyArtifact(it.sourceRepo.toString(),
-                                                                    it.sourcePath.toString(),
-                                                                    completeTargetRepo.toString())
+                        it.sourcePath.toString(),
+                        completeTargetRepo.toString())
 
                     if (status.errors().size() > 0) {
                         status.errors().each { error ->
@@ -59,7 +62,7 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
                         status.messages().each { message ->
                             if (message.level().equalsIgnoreCase("info")) {
                                 logger.quiet "Copied artifact @ ${completeSourceRepo} to ${completeTargetRepo.replaceFirst("/", ":")}"
-                            } else  {
+                            } else {
                                 logger.quiet "Found illegal message copying artifact @ ${completeSourceRepo} to ${completeTargetRepo.replaceFirst("/", ":")}: level=${message.level()}, message=${message.message()}"
                             }
                         }
@@ -79,21 +82,23 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
         def localSourcePath = checkString(sourcePath)
         def localTargetRepo = checkString(targetRepo)
         def localTargetPath = checkString(targetPath)
-
-        if (!artifacts.containsKey(localSourceRepo + "/" + localSourcePath)) {
-            artifacts.put(localSourceRepo + "/" + localSourcePath,
-                    new ArtifactToCopy(sourceRepo: localSourceRepo,
-                            sourcePath: localSourcePath,
-                            targetRepo: localTargetRepo,
-                            targetPath: localTargetPath))
-        }
+        artifacts.put(localSourceRepo + "/" + localSourcePath,
+            new ArtifactToCopy(sourceRepo: localSourceRepo,
+                sourcePath: localSourcePath,
+                targetRepo: localTargetRepo,
+                targetPath: localTargetPath)
+        )
     }
 
     static class ArtifactToCopy {
-        @Input String sourceRepo
-        @Input String sourcePath
-        @Input String targetRepo
-        @Input String targetPath
+        @Input
+        String sourceRepo
+        @Input
+        String sourcePath
+        @Input
+        String targetRepo
+        @Input
+        String targetPath
     }
 
     List<?> requestStatus() { requestStatus }

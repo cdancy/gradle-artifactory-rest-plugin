@@ -17,18 +17,20 @@ package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Input
 
 class DeleteProperties extends ArtifactAware {
 
     @Input
-    List<String> properties = []
+    final ListProperty<String> properties = project.objects.listProperty(String).convention([])
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        if (properties) {
+        def props = properties.orNull
+        if (props && !props.empty) {
             def api = artifactoryClient.api()
-            boolean success = api.storageApi().deleteItemProperties(repo().toString(), artifactPath().toString(), gstringMapToStringMap(properties))
+            boolean success = api.storageApi().deleteItemProperties(repo().toString(), artifactPath().toString(), gstringMapToStringMap(props))
             if (success) {
                 logger.quiet("Successfully deleted properties @ ${repo()}:${artifactPath()}")
             } else {

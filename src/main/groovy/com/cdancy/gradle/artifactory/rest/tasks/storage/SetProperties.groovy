@@ -17,50 +17,59 @@ package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 class SetProperties extends ArtifactAware {
 
     @Input
-    Map<String, List<String>> properties = [:]
+    final MapProperty<String, List<String>> properties = project.objects.mapProperty(String, List).convention([:])
 
     @Input
     @Optional
-    long requestInterval = 1000
+    final Property<Long> requestInterval = project.objects.property(Long).convention(1000L)
 
     @Input
     @Optional
-    Map<String, List<String>> artifacts = new HashMap<>()
+    final MapProperty<String, List<String>> artifacts = project.objects.mapProperty(String, List).convention([:])
 
     @Input
     @Optional
-    int retries = 0
+    final Property<Integer> retries = project.objects.property(Integer).convention(0)
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        if (properties) {
-            if (repo != null && artifactPath != null) {
-                onArtifact(repo(), artifactPath())
+        def propertyMap = properties.orNull
+        if (propertyMap && !propertyMap.isEmpty()) {
+            propertyMap = gstringMapToStringMap(propertyMap)
+
+            if (repo.present && artifactPath.present) {
+                artifact(repo(), artifactPath())
             }
 
-            if (artifacts.size() > 0) {
+            def artifactList = artifacts.orNull
+            if (artifactList && !artifactList.isEmpty()) {
+                def retryCount = retries.get()
+                def requestIntervalMs = requestInterval.get()
+
                 def api = artifactoryClient.api()
-                artifacts.each { k, v ->
+                artifactList.each { k, v ->
                     v.each { it ->
-                        boolean success = false
-                        int retriesLeft = retries
-                        while (!(success = setProperty(api, k.toString(), it.toString())) && (retriesLeft > 0)) {
-                            logger.debug("Could not successfully set properties '${properties}' @ " +
+                        boolean success
+                        int retriesLeft = retryCount
+                        while (!(success = setProperty(api, k.toString(), it.toString(), propertyMap)) && (retriesLeft > 0)) {
+                            logger.debug("Could not successfully set properties '${propertyMap}' @ " +
                                 "${repo}:${path}, will retry after ${requestInterval}ms")
                             retriesLeft -= 1
-                            sleep(requestInterval)
+                            sleep(requestIntervalMs)
                         }
                         if (!success) {
-                            throw new GradleException("Could not successfully set properties '${properties}' @ " +
+                            throw new GradleException("Could not successfully set properties '${propertyMap}' @ " +
                                 "${k}:${it}")
                         }
-                        sleep(requestInterval)
+                        sleep(requestIntervalMs)
                     }
                 }
             } else {
@@ -71,41 +80,34 @@ class SetProperties extends ArtifactAware {
         }
     }
 
-    protected boolean setProperty(api, repo, path) {
+    protected boolean setProperty(api, repo, path, Map<String, List<String>> map) {
         try {
-            if (api.storageApi().setItemProperties(repo, path, gstringMapToStringMap(properties))) {
+            if (api.storageApi().setItemProperties(repo, path, map)) {
                 return true
             } else {
-                logger.debug("Could not successfully set properties '${properties}' @ " +
+                logger.debug("Could not successfully set properties '${map}' @ " +
                     "${repo}:${path}")
                 return false
             }
         } catch (e) {
-            logger.debug("Could not successfully set properties '${properties}' @ " +
+            logger.debug("Could not successfully set properties '${map}' @ " +
                 "${repo}:${path}", e)
             return false
         }
     }
 
-    @Deprecated
-    void onArtifact(String repo, String artifactPath) {
-        artifact(repo, artifactPath)
-    }
-
     void artifact(String repo, String artifactPath) {
-        def localRepo = checkString(repo);
+        def localRepo = checkString(repo)
         def localArtifactPath = checkString(artifactPath)
-        List<String> possibleArtifacts = artifacts.get(localRepo);
-        if (possibleArtifacts == null) {
-            possibleArtifacts = new ArrayList<>()
+        List<String> possibleArtifacts = artifacts.get().get(localRepo)
+        if (!possibleArtifacts) {
+            possibleArtifacts = []
             artifacts.put(localRepo, possibleArtifacts)
         }
 
-        if (!possibleArtifacts.contains(localArtifactPath))
+        if (!possibleArtifacts.contains(localArtifactPath)) {
             possibleArtifacts.add(localArtifactPath)
-
-        if (possibleArtifacts.isEmpty())
-            artifacts.remove(localRepo)
+        }
     }
 }
 

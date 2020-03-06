@@ -16,7 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
-
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -24,19 +24,19 @@ class FileList extends ArtifactAware {
 
     @Input
     @Optional
-    Boolean deep
+    final Property<Boolean> deep = project.objects.property(Boolean).convention(false)
 
     @Input
     @Optional
-    Integer depth = null
+    final Property<Integer> depth = project.objects.property(Integer)
 
     @Input
     @Optional
-    Boolean listFolders
+    final Property<Boolean> listFolders = project.objects.property(Boolean).convention(false)
 
     @Input
     @Optional
-    Boolean includeRootPath
+    final Property<Boolean> includeRootPath = project.objects.property(Boolean).convention(false)
 
     private def fileList
 
@@ -44,11 +44,11 @@ class FileList extends ArtifactAware {
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api()
         fileList = api.storageApi().fileList(repo(),
-                artifactPath(),
-                deep ? 1 : 0,
-                depth,
-                listFolders ? 1 : 0,
-                includeRootPath ? 1 : 0)
+            artifactPath(),
+            deep.get() ? 1 : 0,
+            depth.orNull,
+            listFolders.get() ? 1 : 0,
+            includeRootPath.get() ? 1 : 0)
         logger.quiet "Found ${fileList.files().size()} files"
     }
 

@@ -18,12 +18,11 @@ package com.cdancy.gradle.artifactory.rest.tasks
 import com.cdancy.gradle.artifactory.rest.utils.ThreadContextClassLoader
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.TaskAction
 
 abstract class AbstractArtifactoryRestTask extends DefaultTask {
 
-
-    public String checkString(String dirtyString) {
+    String checkString(String dirtyString) {
         if (dirtyString == null) throw new GradleException("String to sanitize must not be null");
         String tempString = dirtyString.trim();
         if (tempString.length() > 0) {
@@ -33,15 +32,15 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
         }
     }
 
-    public Map<String, List<String>> gstringMapToStringMap(Map<String, List<String>> gStringMap) {
+    Map<String, List<String>> gstringMapToStringMap(Map<String, List<String>> gStringMap) {
         Map<String, List<String>> convertedMap = new HashMap<>();
-        gStringMap.each { k,v ->
+        gStringMap.each { k, v ->
             convertedMap.put(k.toString(), v*.toString())
         }
         convertedMap
     }
 
-    public String randomString() {
+    String randomString() {
         UUID.randomUUID().toString().replaceAll("-", "")
     }
 
@@ -55,7 +54,7 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
     }
 
     void runInArtifactoryClassPath(Closure closure) {
-      threadContextClassLoader.withClosure(closure)
+        threadContextClassLoader.withClosure(closure)
     }
 
     abstract void runRemoteCommand(artifactoryClient)

@@ -16,6 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.tasks
 
 import org.gradle.api.GradleException
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -23,27 +24,27 @@ abstract class ArtifactAware extends AbstractArtifactoryRestTask {
 
     @Input
     @Optional
-    Closure<String> repo
+    final Property<String> repo = project.objects.property(String)
 
     @Input
     @Optional
-    Closure<String> artifactPath
+    final Property<String> artifactPath = project.objects.property(String)
 
-    public String repo() {
-        String var = repo ? repo.call() : null
+    String repo() {
+        String var = repo.orNull
         if (var?.trim()) {
             var
         } else {
-            throw new GradleException("repo does not resolve to a valid String: repo=" + var)
+            throw new GradleException("repo does not resolve to a valid String: repo=${var}")
         }
     }
 
-    public String artifactPath() {
-        String var = artifactPath ? artifactPath.call() : null
+    String artifactPath() {
+        String var = artifactPath.orNull
         if (var?.trim()) {
             var
         } else {
-            throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=" + var)
+            throw new GradleException("artifactPath does not resolve to a valid String: artifactPath=${var}")
         }
     }
 }

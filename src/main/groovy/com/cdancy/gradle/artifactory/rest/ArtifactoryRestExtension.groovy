@@ -15,16 +15,32 @@
  */
 package com.cdancy.gradle.artifactory.rest
 
-import org.gradle.api.Nullable;
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
+
+import javax.inject.Inject;
 
 class ArtifactoryRestExtension {
 
-    @Nullable
-    Closure<String> url
+    @Input
+    @Optional
+    final Property<String> url
 
-    @Nullable
-    Closure<String> credentials
+    @Input
+    @Optional
+    final Property<String> credentials
 
-    @Nullable
-    Map<String, String> overrides = [:]
+    @Input
+    @Optional
+    final MapProperty<String, String> overrides
+
+    @Inject
+    ArtifactoryRestExtension(ObjectFactory objectFactory) {
+        url = objectFactory.property(String)
+        credentials = objectFactory.property(String)
+        overrides = objectFactory.mapProperty(String, String).convention([:])
+    }
 }

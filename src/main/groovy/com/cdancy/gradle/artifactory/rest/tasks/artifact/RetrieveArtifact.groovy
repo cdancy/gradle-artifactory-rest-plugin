@@ -15,7 +15,8 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
-import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware;
+import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -23,15 +24,15 @@ class RetrieveArtifact extends ArtifactAware {
 
     @Optional
     @Input
-    Map<String, List<String>> properties = [:]
+    final MapProperty<String, List<String>> properties = project.objects.mapProperty(String, List).convention([:])
 
     private File artifact;
 
     @Override
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().artifactApi()
-        artifact = api.retrieveArtifact(repo().toString(), artifactPath().toString(), gstringMapToStringMap(properties))
+        artifact = api.retrieveArtifact(repo().toString(), artifactPath().toString(), gstringMapToStringMap(properties.get()))
     }
 
-    public File artifact() { artifact }
+    File artifact() { artifact }
 }

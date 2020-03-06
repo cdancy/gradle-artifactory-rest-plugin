@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cdancy.gradle.artifactory.rest;
+package com.cdancy.gradle.artifactory.rest
 
-import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask;
+import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
 import com.cdancy.gradle.artifactory.rest.utils.ArtifactoryRestThreadContextClassLoader
 import com.cdancy.gradle.artifactory.rest.utils.ThreadContextClassLoader
 import org.gradle.api.Plugin
@@ -35,12 +35,12 @@ class ArtifactoryRestPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         Configuration configuration = project.configurations.create(ARTIFACTORY_CONFIGURATION_NAME)
-                .setVisible(false)
-                .setTransitive(true)
-                .setDescription('The Artifactory Java libraries to be used for this project.')
+            .setVisible(false)
+            .setTransitive(true)
+            .setDescription('The Artifactory Java libraries to be used for this project.')
 
         ArtifactoryRestExtension extension = project.extensions.create(EXTENSION_NAME, ArtifactoryRestExtension)
-		configureAbstractArtifactoryTask(project, extension)
+        configureAbstractArtifactoryTask(project, extension)
     }
 
     private void configureAbstractArtifactoryTask(Project project, ArtifactoryRestExtension extension) {
