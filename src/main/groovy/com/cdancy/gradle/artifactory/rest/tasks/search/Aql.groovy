@@ -17,18 +17,19 @@ package com.cdancy.gradle.artifactory.rest.tasks.search
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
 import org.gradle.api.GradleException
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 
 class Aql extends AbstractArtifactoryRestTask {
 
     @Input
-    Closure<String> query
+    final Property<String> query = project.objects.property(String)
 
     private def aqlResult
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        String tempQuery = query ? query.call() : null
+        String tempQuery = query.orNull
         if (tempQuery?.trim()) {
             def api = artifactoryClient.api();
             aqlResult = api.searchApi().aql(tempQuery.toString());
@@ -37,6 +38,6 @@ class Aql extends AbstractArtifactoryRestTask {
         }
     }
 
-    public def aqlResult() { aqlResult }
+    def aqlResult() { aqlResult }
 }
 

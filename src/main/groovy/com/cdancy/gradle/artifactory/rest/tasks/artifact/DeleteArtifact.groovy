@@ -17,6 +17,8 @@ package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import org.gradle.api.GradleException
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -24,27 +26,30 @@ class DeleteArtifact extends ArtifactAware {
 
     @Input
     @Optional
-    boolean failFast = false
+    final Property<Boolean> failFast = project.objects.property(Boolean).convention(false)
 
     @Input
     @Optional
-    long requestInterval = 1000
+    final Property<Long> requestInterval = project.objects.property(Long).convention(1000L)
 
     @Input
     @Optional
-    Map<String, List<String>> artifacts = new HashMap<>();
+    final MapProperty<String, List<String>> artifacts = project.objects.mapProperty(String, List).convention([:])
 
     @Override
     void runRemoteCommand(artifactoryClient) {
 
-        if (repo != null && artifactPath != null) {
+        if (repo.present && artifactPath.present) {
             artifact(repo(), artifactPath())
         }
-
-        if (artifacts) {
+        def artifactsMap = artifacts.orNull
+        if (artifactsMap && !artifactsMap.isEmpty()) {
             int errors = 0
+            def requestIntervalMS = requestInterval.get()
+            def shouldFailFast = failFast.get()
+
             def api = artifactoryClient.api().artifactApi()
-            gstringMapToStringMap(artifacts).each { k, v ->
+            gstringMapToStringMap(artifactsMap).each { k, v ->
                 v.each { it ->
                     String localRepo = k.toString()
                     String localPath = it.toString()
@@ -53,14 +58,14 @@ class DeleteArtifact extends ArtifactAware {
                         logger.quiet("Successfully deleted artifact @ ${localRepo}:${localPath}")
                     } else {
                         String errorMessage = "Failed to delete artifact @ ${localRepo}:${localPath}"
-                        if (failFast) {
+                        if (shouldFailFast) {
                             throw new GradleException(errorMessage)
                         } else {
                             errors = errors++
                             logger.error(errorMessage)
                         }
                     }
-                    sleep(requestInterval)
+                    sleep(requestIntervalMS)
                 }
             }
             if (errors > 0)
@@ -71,18 +76,16 @@ class DeleteArtifact extends ArtifactAware {
     }
 
     void artifact(String repo, String artifactPath) {
-        repo = checkString(repo);
-        artifactPath = checkString(artifactPath)
-        List<String> possibleArtifacts = artifacts.get(repo);
-        if (possibleArtifacts == null) {
-            possibleArtifacts = new ArrayList<>()
-            artifacts.put(repo, possibleArtifacts)
+        def localRepo = checkString(repo)
+        def localArtifactPath = checkString(artifactPath)
+        List<String> possibleArtifacts = artifacts.get().get(localRepo)
+        if (!possibleArtifacts) {
+            possibleArtifacts = []
+            artifacts.put(localRepo, possibleArtifacts)
         }
 
-        if (!possibleArtifacts.contains(artifactPath))
-            possibleArtifacts.add(artifactPath)
-
-        if (possibleArtifacts.isEmpty())
-            artifacts.remove(repo)
+        if (!possibleArtifacts.contains(localArtifactPath)) {
+            possibleArtifacts.add(localArtifactPath)
+        }
     }
 }

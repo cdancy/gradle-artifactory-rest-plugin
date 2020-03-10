@@ -19,6 +19,9 @@ import org.gradle.testkit.runner.BuildResult
 import com.cdancy.gradle.artifactory.rest.TestPrecondition
 import spock.lang.Requires
 
+//TODO: This looks like a test for a docker plugin not an artifactory plugin
+//     I suspect this was moved over fro ma different repo without change
+//     Should probably delete?
 @Requires({ TestPrecondition.ARTIFACTORY_SERVER_INFO_URL_REACHABLE })
 class ArtifactoryRestWorkflowFunctionalTest extends AbstractFunctionalTest {
     def "Can create Dockerfile and build an image from it"() {

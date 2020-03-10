@@ -16,6 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.tasks
 
 import org.gradle.api.GradleException
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
@@ -23,19 +24,19 @@ abstract class GAVCAware extends AbstractArtifactoryRestTask {
 
     @Input
     @Optional
-    Closure<String> groupName
+    final Property<String> groupName = project.objects.property(String)
 
     @Input
     @Optional
-    Closure<String> artifactName
+    final Property<String> artifactName = project.objects.property(String)
 
     @Input
     @Optional
-    Closure<String> versionName
+    final Property<String> versionName = project.objects.property(String)
 
     @Input
     @Optional
-    Closure<String> classifierName
+    final Property<String> classifierName = project.objects.property(String)
 
     String groupName() {
         validateString(groupName)
@@ -53,8 +54,8 @@ abstract class GAVCAware extends AbstractArtifactoryRestTask {
         validateString(classifierName)
     }
 
-    private String validateString(Closure<String> closure) {
-        String var = closure ? closure.call() : null
+    private String validateString(Property<String> property) {
+        String var = property.orNull
         if (var?.trim()) {
             var
         } else {

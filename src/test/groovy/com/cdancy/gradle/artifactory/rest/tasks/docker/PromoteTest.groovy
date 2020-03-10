@@ -51,7 +51,7 @@ class PromoteTest extends Specification {
 
     def 'promotes image with target tag'() {
         given:
-        promoteTask.targetTag = { 'latest' }
+        promoteTask.targetTag = 'latest'
         dockerApi.promote('source-repo', _) >> true
 
         when:
@@ -70,10 +70,10 @@ class PromoteTest extends Specification {
         project = ProjectBuilder.builder().withName('root').build()
         project.plugins.apply ArtifactoryRestPlugin
         promoteTask = project.tasks.create('promoteImage', Promote) {
-            repo = { 'source-repo' }
-            promotedRepo = { 'target-repo' }
-            image = { 'test/image' }
-            tag = { '1.0.0' }
+            repo = 'source-repo'
+            promotedRepo = 'target-repo'
+            image = 'test/image'
+            tag = '1.0.0'
         }
 
         artifactoryClient = Mock()

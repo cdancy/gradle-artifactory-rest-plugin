@@ -25,12 +25,12 @@ class Version extends AbstractArtifactoryRestTask {
     void runRemoteCommand(artifactoryClient) {
         def api = artifactoryClient.api().systemApi()
         version = api.version()
-        logger.quiet "Version: ${version.version}"
-        logger.quiet "Revision: ${version.revision}"
-        logger.quiet "Addons: ${version.addons}"
-        logger.quiet "License: ${version.license}"
+        logger.quiet "Version: ${version?.version}"
+        logger.quiet "Revision: ${version?.revision}"
+        logger.quiet "Addons: ${version?.addons}"
+        logger.quiet "License: ${version?.license}"
     }
 
-    public def version() { version }
+    def version() { version }
 }
 

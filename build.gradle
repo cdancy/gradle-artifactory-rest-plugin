@@ -29,6 +29,9 @@ dependencies {
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude module: 'groovy-all'
     }
+
+    //Make sure this matches ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION
+    testCompile 'com.cdancy:artifactory-rest:0.9.8:all'
 }
 
 ext.compatibilityVersion = '1.8'

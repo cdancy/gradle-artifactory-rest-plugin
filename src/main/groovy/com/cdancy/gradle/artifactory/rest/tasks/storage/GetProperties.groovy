@@ -28,6 +28,6 @@ class GetProperties extends ArtifactAware {
         logger.quiet("Found '${properties.size()}' properties @ ${repo()}:${artifactPath()}")
     }
 
-    public Map<String, List<String>> properties() { properties }
+    Map<String, List<String>> properties() { properties }
 }
 

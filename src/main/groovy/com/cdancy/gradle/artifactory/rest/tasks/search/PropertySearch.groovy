@@ -16,25 +16,28 @@
 package com.cdancy.gradle.artifactory.rest.tasks.search
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
 class PropertySearch extends AbstractArtifactoryRestTask {
 
     @Input
-    Map<String, List<String>> properties = [:]
+    final MapProperty<String, List<String>> properties = project.objects.mapProperty(String, List).convention([:])
 
     @Input
     @Optional
-    List<String> repos = []
+    final ListProperty<String> repos = project.objects.listProperty(String).convention([])
 
     private List<?> results = []
 
     @Override
     void runRemoteCommand(artifactoryClient) {
-        if (properties) {
+        def props = properties.orNull
+        if (props && !props.isEmpty()) {
             def api = artifactoryClient.api()
-            results.addAll(api.searchApi().propertySearch(gstringMapToStringMap(properties), repos ? repos : null))
+            results.addAll(api.searchApi().propertySearch(gstringMapToStringMap(props), repos.orNull))
             logger.quiet("Found '${results.size()}' artifacts with properties ${properties}")
         } else {
             logger.quiet "`properties` are empty. Nothing to do..."
@@ -43,4 +46,3 @@ class PropertySearch extends AbstractArtifactoryRestTask {
 
     List<?> results() { results }
 }
-

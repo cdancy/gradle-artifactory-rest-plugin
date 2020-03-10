@@ -17,7 +17,6 @@ package com.cdancy.gradle.artifactory.rest.utils
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestExtension
 import java.lang.reflect.Constructor
-import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
 
 import java.lang.reflect.Method
@@ -53,13 +52,9 @@ class ArtifactoryRestThreadContextClassLoader implements ThreadContextClassLoade
 
         // These can be null but if so then System Properties and
         // Environment Variables will be searched instead.
-        final String foundEndPoint = artifactoryRestExtension.url
-            ? artifactoryRestExtension.url.call()
-            : null
-        final String foundCredentials = artifactoryRestExtension.credentials
-            ? artifactoryRestExtension.credentials.call()
-            : null
-        final Map<String, String> possibleOverrides = ArtifactoryRestUtil.gstringMapToStringMap(artifactoryRestExtension.overrides)
+        final String foundEndPoint = artifactoryRestExtension.url.orNull
+        final String foundCredentials = artifactoryRestExtension.credentials.orNull
+        final Map<String, String> possibleOverrides = ArtifactoryRestUtil.gstringMapToStringMap(artifactoryRestExtension.overrides.get())
         final Properties foundOverrides = new Properties();
         foundOverrides.putAll(possibleOverrides);
 
