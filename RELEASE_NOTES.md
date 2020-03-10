@@ -1,4 +1,5 @@
-### Version 0.0.19 (TBA)
+### Version 1.0.0 (3/10/20)
+* REFACTOR: bring the plugin into the 21st century of gradle operations.
 
 ### Version 0.0.18 (3/5/20)
 * ADDED: Expose `targetTag` on `Promote` task.
