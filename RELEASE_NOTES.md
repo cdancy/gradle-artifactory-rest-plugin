@@ -1,3 +1,5 @@
+### Version 1.0.1 (TBA)
+
 ### Version 1.0.0 (3/10/20)
 * REFACTOR: bring the plugin into the 21st century of gradle operations.
 
