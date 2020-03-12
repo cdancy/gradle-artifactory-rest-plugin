@@ -19,9 +19,16 @@ githubPages {
         }
     }
     credentials {
-    	username = project.releaseUsername
-    	password = project.releasePassword
+        username = resolveProperty('githubUsername')
+        password = resolveProperty('githubPassword')
     }
 }
 
 publishGhPages.dependsOn javadoc, groovydoc
+
+
+String resolveProperty(String propKey) {
+    String propValue = System.getenv()[propKey]
+    if(propValue) { return propValue }
+    hasProperty(propKey) ? getProperty(propKey) : null
+}
