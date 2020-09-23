@@ -52,7 +52,7 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
         UUID.randomUUID().toString().replaceAll("-", "")
     }
 
-    ThreadContextClassLoader threadContextClassLoader
+    protected ThreadContextClassLoader threadContextClassLoader
 
     @TaskAction
     void start() {
