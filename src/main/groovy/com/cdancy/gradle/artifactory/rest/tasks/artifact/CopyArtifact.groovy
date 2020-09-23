@@ -16,6 +16,8 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.search.Aql
+import org.gradle.api.Action
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -88,6 +90,29 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
                 targetRepo: localTargetRepo,
                 targetPath: localTargetPath)
         )
+    }
+
+    void artifactsFromAql(def aqlTask, String repo, Action resultConverter = null) {
+        dependsOn aqlTask
+        artifacts.set(project.provider {
+            def artifactMap = [:]
+            aqlTask.aqlResult().results.each { rawResult ->
+                def result = resultConverter ? resultConverter.execute(rawResult) : rawResult
+                if(result) {
+                    def localSourceRepo = checkString(result.repo)
+                    def localSourcePath = checkString(result.path)
+                    def localTargetRepo = checkString(repo)
+                    def localTargetPath = checkString(result.path)
+                    artifactMap.put(localSourceRepo + "/" + localSourcePath,
+                        new ArtifactToCopy(sourceRepo: localSourceRepo,
+                            sourcePath: localSourcePath,
+                            targetRepo: localTargetRepo,
+                            targetPath: localTargetPath)
+                    )
+                }
+            }
+            artifactMap
+        })
     }
 
     static class ArtifactToCopy {

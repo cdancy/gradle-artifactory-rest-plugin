@@ -16,7 +16,10 @@
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
+import com.cdancy.gradle.artifactory.rest.tasks.search.Aql
+import org.gradle.api.Action
 import org.gradle.api.GradleException
+import org.gradle.api.Task
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -108,6 +111,23 @@ class SetProperties extends ArtifactAware {
         if (!possibleArtifacts.contains(localArtifactPath)) {
             possibleArtifacts.add(localArtifactPath)
         }
+    }
+
+    void artifactsFromAql(def aqlTask, String repo, Action resultConverter = null) {
+        dependsOn aqlTask
+        def localRepo = checkString(repo)
+        artifacts.set(project.provider {
+            def artifactMap = [:]
+            aqlTask.aqlResult().results.each { rawResult ->
+                def result = resultConverter ? resultConverter.execute(rawResult) : rawResult
+                if(result) {
+                    def localArtifactPath = checkString(result.path)
+                    artifactMap[localRepo] = artifactMap[localRepo] ?: []
+                    artifactMap[localRepo].add(localArtifactPath)
+                }
+            }
+            artifactMap
+        })
     }
 }
 
