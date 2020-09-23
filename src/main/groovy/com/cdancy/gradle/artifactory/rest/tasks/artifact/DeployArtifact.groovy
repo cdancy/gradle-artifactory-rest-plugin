@@ -34,11 +34,11 @@ class DeployArtifact extends ArtifactAware {
 
     @Optional
     @InputFile
-    RegularFileProperty file = project.objects.fileProperty()
+    final RegularFileProperty file = project.objects.fileProperty()
 
     @Optional
     @InputDirectory
-    DirectoryProperty directory = project.objects.directoryProperty()
+    final DirectoryProperty directory = project.objects.directoryProperty()
 
     private def artifacts = []
 

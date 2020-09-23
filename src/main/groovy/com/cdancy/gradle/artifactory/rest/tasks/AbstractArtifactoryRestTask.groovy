@@ -15,9 +15,13 @@
  */
 package com.cdancy.gradle.artifactory.rest.tasks
 
+import com.cdancy.gradle.artifactory.rest.ArtifactoryRestExtension
+import com.cdancy.gradle.artifactory.rest.ArtifactoryRestPlugin
+import com.cdancy.gradle.artifactory.rest.utils.ArtifactoryRestThreadContextClassLoader
 import com.cdancy.gradle.artifactory.rest.utils.ThreadContextClassLoader
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 
 abstract class AbstractArtifactoryRestTask extends DefaultTask {
@@ -52,7 +56,16 @@ abstract class AbstractArtifactoryRestTask extends DefaultTask {
         UUID.randomUUID().toString().replaceAll("-", "")
     }
 
-    ThreadContextClassLoader threadContextClassLoader
+    @Nested
+    final ArtifactoryRestExtension artifactoryRest = project.objects.newInstance(ArtifactoryRestExtension)
+
+    protected ThreadContextClassLoader threadContextClassLoader
+
+    AbstractArtifactoryRestTask() {
+        threadContextClassLoader = new ArtifactoryRestThreadContextClassLoader(
+            artifactoryRest,
+            project.configurations.maybeCreate(ArtifactoryRestPlugin.ARTIFACTORY_CONFIGURATION_NAME))
+    }
 
     @TaskAction
     void start() {

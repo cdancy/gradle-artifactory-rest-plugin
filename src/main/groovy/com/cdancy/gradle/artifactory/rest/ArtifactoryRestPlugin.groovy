@@ -44,10 +44,14 @@ class ArtifactoryRestPlugin implements Plugin<Project> {
     }
 
     private void configureAbstractArtifactoryTask(Project project, ArtifactoryRestExtension extension) {
-        ThreadContextClassLoader artifactoryClassLoader = new ArtifactoryRestThreadContextClassLoader(extension, configurePluginClassPath(project))
+        configurePluginClassPath(project)
         project.tasks.withType(AbstractArtifactoryRestTask) {
             group = DEFAULT_TASK_GROUP
-            threadContextClassLoader = artifactoryClassLoader
+            //default the task's values for artifactoryRest to the global extension's
+            //values by default
+            artifactoryRest.url.set(extension.url)
+            artifactoryRest.credentials.set(extension.credentials)
+            artifactoryRest.overrides.set(extension.overrides)
         }
     }
 
