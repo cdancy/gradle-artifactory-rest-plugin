@@ -1,4 +1,5 @@
-### Version 1.0.1 (TBA)
+### Version 1.1.0 (9/23/20)
+* REFACTOR: General improvements - Build with gradle-java-plugin, cleanup task input warnings, & helpers for Aql.
 
 ### Version 1.0.0 (3/10/20)
 * REFACTOR: bring the plugin into the 21st century of gradle operations.
