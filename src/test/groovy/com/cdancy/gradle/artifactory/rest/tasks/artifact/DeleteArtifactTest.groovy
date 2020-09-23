@@ -16,6 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestPlugin
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -54,6 +55,50 @@ class DeleteArtifactTest extends Specification {
         1 * artifactApi.deleteArtifact('source-repo-3', 'source-path-3') >> true
     }
 
+    def 'delete artifacts from Aql results'() {
+        given:
+        AqlTask aql = project.tasks.create('aql', AqlTask) {
+            aqlResult = Mock(AqlResults)
+            aqlResult.results >> [
+                [repo: 'source-repo-1', path: 'source-path-1'],
+                [repo: 'source-repo-1', path: 'source-path-2'],
+                [repo: 'source-repo-3', path: 'source-path-3']
+            ]
+        }
+        deleteArtifactTask.artifactsFromAql('aql')
+
+        when:
+        deleteArtifactTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        1 * artifactApi.deleteArtifact('source-repo-1', 'source-path-1') >> true
+        1 * artifactApi.deleteArtifact('source-repo-1', 'source-path-2') >> true
+        1 * artifactApi.deleteArtifact('source-repo-3', 'source-path-3') >> true
+    }
+
+    def 'delete artifacts from Aql results with transformer'() {
+        given:
+        AqlTask aql = project.tasks.create('aql', AqlTask) {
+            aqlResult = Mock(AqlResults)
+            aqlResult.results >> [
+                [repo: 'source-repo-1', path: 'source-path-1'],
+                [repo: 'source-repo-1', path: 'source-path-2'],
+                [repo: 'source-repo-3', path: 'source-path-3']
+            ]
+        }
+        deleteArtifactTask.artifactsFromAql(aql) {
+            [repo: "art-$it.repo", path: "art/$it.path"]
+        }
+
+        when:
+        deleteArtifactTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        1 * artifactApi.deleteArtifact('art-source-repo-1', 'art/source-path-1') >> true
+        1 * artifactApi.deleteArtifact('art-source-repo-1', 'art/source-path-2') >> true
+        1 * artifactApi.deleteArtifact('art-source-repo-3', 'art/source-path-3') >> true
+    }
+
     def setup() {
         project = ProjectBuilder.builder().withName('root').build()
         project.plugins.apply ArtifactoryRestPlugin
@@ -77,5 +122,15 @@ class DeleteArtifactTest extends Specification {
 
     interface ArtifactoryArtifactApi {
         boolean deleteArtifact(String repoKey, String itemPath)
+    }
+
+    interface AqlResults {
+        List getResults()
+    }
+
+    static class AqlTask extends DefaultTask {
+        AqlResults aqlResult
+
+        def aqlResult() { aqlResult }
     }
 }

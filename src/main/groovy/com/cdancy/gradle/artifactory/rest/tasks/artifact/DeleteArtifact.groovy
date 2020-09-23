@@ -19,6 +19,8 @@ import com.cdancy.gradle.artifactory.rest.tasks.ArtifactAware
 import com.cdancy.gradle.artifactory.rest.tasks.search.Aql
 import org.gradle.api.Action
 import org.gradle.api.GradleException
+import org.gradle.api.Task
+import org.gradle.api.Transformer
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -91,12 +93,13 @@ class DeleteArtifact extends ArtifactAware {
         }
     }
 
-    void artifactsFromAql(def aqlTask, Action resultConverter = null) {
-        dependsOn aqlTask
+    void artifactsFromAql(def aql, Transformer resultTransformer = null) {
+        dependsOn aql
         artifacts.set(project.provider {
             def artifactMap = [:]
+            def aqlTask = aql instanceof Task ? aql : project.tasks.findByPath(aql)
             aqlTask.aqlResult().results.each { rawResult ->
-                def result = resultConverter ? resultConverter.execute(rawResult) : rawResult
+                def result = resultTransformer ? resultTransformer.transform(rawResult) : rawResult
                 if(result) {
                     def localRepo = checkString(result.repo)
                     def localArtifactPath = checkString(result.path)
