@@ -1,3 +1,8 @@
+### Version 1.1.2 (TBA)
+
+### Version 1.1.1 (9/24/20)
+* FIX: serialization error in ArtifactToCopy
+
 ### Version 1.1.0 (9/23/20)
 * REFACTOR: General improvements - Build with gradle-java-plugin, cleanup task input warnings, & helpers for Aql.
 
