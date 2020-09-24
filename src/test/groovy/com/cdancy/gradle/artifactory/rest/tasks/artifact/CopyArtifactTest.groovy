@@ -16,6 +16,7 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestPlugin
+import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
@@ -53,6 +54,42 @@ class CopyArtifactTest extends Specification {
         1 * artifactApi.copyArtifact('source-repo-1', 'source-path-2', 'target-repo-2/target-path-2') >> status
     }
 
+    def 'copy artifacts from Aql results'() {
+        given:
+        def status = com.cdancy.artifactory.rest.domain.error.RequestStatus.create([], [])
+        AqlTask aql = project.tasks.create('aql', AqlTask) {
+            aqlResult = Mock(AqlResults)
+            aqlResult.results >> [[repo: 'source-repo-1', path: 'source-path-1'],[repo: 'source-repo-2', path: 'source-path-2']]
+        }
+        copyArtifactTask.artifactsFromAql('aql', 'target-repo')
+
+        when:
+        copyArtifactTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        1 * artifactApi.copyArtifact('source-repo-1', 'source-path-1', 'target-repo/source-path-1') >> status
+        1 * artifactApi.copyArtifact('source-repo-2', 'source-path-2', 'target-repo/source-path-2') >> status
+    }
+
+    def 'copy artifacts from Aql results with transformer'() {
+        given:
+        def status = com.cdancy.artifactory.rest.domain.error.RequestStatus.create([], [])
+        AqlTask aql = project.tasks.create('aql', AqlTask) {
+            aqlResult = Mock(AqlResults)
+            aqlResult.results >> [[repo: 'source-repo-1', path: 'source-path-1'],[repo: 'source-repo-2', path: 'source-path-2']]
+        }
+        copyArtifactTask.artifactsFromAql(aql, 'target-repo') {
+            [repo: it.repo, path: "art/$it.path"]
+        }
+
+        when:
+        copyArtifactTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        1 * artifactApi.copyArtifact('source-repo-1', 'art/source-path-1', 'target-repo/art/source-path-1') >> status
+        1 * artifactApi.copyArtifact('source-repo-2', 'art/source-path-2', 'target-repo/art/source-path-2') >> status
+    }
+
     def setup() {
         project = ProjectBuilder.builder().withName('root').build()
         project.plugins.apply ArtifactoryRestPlugin
@@ -76,5 +113,15 @@ class CopyArtifactTest extends Specification {
 
     interface ArtifactoryArtifactApi {
         def copyArtifact(String sourceRepo, String sourcePath, String targetPath)
+    }
+
+    interface AqlResults {
+        List getResults()
+    }
+
+    static class AqlTask extends DefaultTask {
+        AqlResults aqlResult
+
+        def aqlResult() { aqlResult }
     }
 }

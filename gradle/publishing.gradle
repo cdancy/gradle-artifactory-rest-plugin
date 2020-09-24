@@ -11,14 +11,10 @@ buildscript {
 apply plugin: 'maven-publish'
 apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            artifact sourcesJar
-            artifact docsJar
-        }
-    }
+project.afterEvaluate {
+    //needs to be in afterEvaluate as its dynamically added by the java-gradle-plugin
+    project.publishing.publications.pluginMaven.artifact project.sourcesJar
+    project.publishing.publications.pluginMaven.artifact project.docsJar
 }
 
 artifactory {
@@ -31,7 +27,8 @@ artifactory {
             mavenCompatible = true
         }
         defaults {
-            publications ('mavenJava')
+            //publish the plugin & its marker file (used for new-style plugins {} closure)
+            publications ('pluginMaven', 'mainPluginMarkerMaven')
         }
     }
 }
@@ -40,7 +37,8 @@ bintray {
 
     user = project.bintrayUsername
     key = project.bintrayKey
-    publications = ['mavenJava']
+    //publish the plugin & its marker file (used for new-style plugins {} closure)
+    publications = ['pluginMaven', 'mainPluginMarkerMaven']
     publish = true
 
     pkg {

@@ -1,6 +1,7 @@
 package com.cdancy.gradle.artifactory.rest.tasks.storage
 
 import com.cdancy.gradle.artifactory.rest.ArtifactoryRestPlugin
+import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -55,6 +56,38 @@ class SetPropertiesTest extends Specification {
         thrown(GradleException)
     }
 
+    def 'set properties from Aql results'() {
+        given:
+        AqlTask aql = project.tasks.create('aql', AqlTask) {
+            aqlResult = Mock(AqlResults)
+            aqlResult.results >> [[repo: 'test-repo', path: 'test/artifact/path/for.jar']]
+        }
+        setPropertiesTask.artifactsFromAql('aql', 'test-repo')
+
+        when:
+        setPropertiesTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        1 * storageApi.setItemProperties('test-repo', 'test/artifact/path/for.jar', _) >> true
+    }
+
+    def 'set properties from Aql results with transformer'() {
+        given:
+        AqlTask aql = project.tasks.create('aql', AqlTask) {
+            aqlResult = Mock(AqlResults)
+            aqlResult.results >> [[repo: 'test-repo', path: 'test/artifact/path/for.jar']]
+        }
+        setPropertiesTask.artifactsFromAql(aql, 'test-repo') {
+            [path: "art/$it.path"]
+        }
+
+        when:
+        setPropertiesTask.runRemoteCommand(artifactoryClient)
+
+        then:
+        1 * storageApi.setItemProperties('test-repo', 'art/test/artifact/path/for.jar', _) >> true
+    }
+
     def setup() {
         project = ProjectBuilder.builder().withName('root').build()
         project.plugins.apply ArtifactoryRestPlugin
@@ -82,5 +115,15 @@ class SetPropertiesTest extends Specification {
 
     interface ArtifactoryStorageApi {
         boolean setItemProperties(String repo, String path, Map properties)
+    }
+
+    interface AqlResults {
+        List getResults()
+    }
+
+    static class AqlTask extends DefaultTask {
+        AqlResults aqlResult
+
+        def aqlResult() { aqlResult }
     }
 }

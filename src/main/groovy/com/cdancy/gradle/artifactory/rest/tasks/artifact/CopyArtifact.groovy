@@ -16,6 +16,10 @@
 package com.cdancy.gradle.artifactory.rest.tasks.artifact
 
 import com.cdancy.gradle.artifactory.rest.tasks.AbstractArtifactoryRestTask
+import com.cdancy.gradle.artifactory.rest.tasks.search.Aql
+import org.gradle.api.Action
+import org.gradle.api.Task
+import org.gradle.api.Transformer
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -89,10 +93,34 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
                 targetPath: localTargetPath)
         )
     }
-
+  
+    void artifactsFromAql(def aql, String repo, Transformer resultTransformer = null) {
+        dependsOn aql
+        artifacts.set(project.provider {
+            def artifactMap = [:]
+            def aqlTask = aql instanceof Task ? aql : project.tasks.findByPath(aql)
+            aqlTask.aqlResult().results.each { rawResult ->
+                def result = resultTransformer ? resultTransformer.transform(rawResult) : rawResult
+                if(result) {
+                    def localSourceRepo = checkString(result.repo)
+                    def localSourcePath = checkString(result.path)
+                    def localTargetRepo = checkString(repo)
+                    def localTargetPath = checkString(result.path)
+                    artifactMap.put(localSourceRepo + "/" + localSourcePath,
+                        new ArtifactToCopy(sourceRepo: localSourceRepo,
+                            sourcePath: localSourcePath,
+                            targetRepo: localTargetRepo,
+                            targetPath: localTargetPath)
+                    )
+                }
+            }
+            artifactMap
+        })
+    }
+  
     static class ArtifactToCopy implements Serializable {
         private static final long serialVersionUID = 1L
-
+      
         @Input
         String sourceRepo
         @Input
