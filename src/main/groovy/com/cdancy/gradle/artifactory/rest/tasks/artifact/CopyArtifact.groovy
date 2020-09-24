@@ -90,7 +90,9 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
         )
     }
 
-    static class ArtifactToCopy {
+    static class ArtifactToCopy implements Serializable {
+        private static final long serialVersionUID = 1L
+
         @Input
         String sourceRepo
         @Input
@@ -99,6 +101,11 @@ class CopyArtifact extends AbstractArtifactoryRestTask {
         String targetRepo
         @Input
         String targetPath
+
+        @Override
+        String toString() {
+            "$sourceRepo:$sourcePath - $targetRepo:$targetPath"
+        }
     }
 
     List<?> requestStatus() { requestStatus }
