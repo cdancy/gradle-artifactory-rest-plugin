@@ -1,4 +1,5 @@
-### Version 1.1.2 (TBA)
+### Version 1.1.2 (9/21/21)
+* FIX: remove project.repositories collection
 
 ### Version 1.1.1 (9/24/20)
 * FIX: serialization error in ArtifactToCopy

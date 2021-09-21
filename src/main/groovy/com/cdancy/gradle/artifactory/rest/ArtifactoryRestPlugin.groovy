@@ -56,9 +56,6 @@ class ArtifactoryRestPlugin implements Plugin<Project> {
     }
 
     private static Configuration configurePluginClassPath(Project project) {
-        project.afterEvaluate {
-            project.repositories.addAll(project.buildscript.repositories.collect())
-        }
         Configuration configuration = project.configurations.getByName(ARTIFACTORY_CONFIGURATION_NAME)
         configuration.defaultDependencies { dependencies ->
             def artifactoryRestGAVC = "com.cdancy:artifactory-rest:$ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION:all"
