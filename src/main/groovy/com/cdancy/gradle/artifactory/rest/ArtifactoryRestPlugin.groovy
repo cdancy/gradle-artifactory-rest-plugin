@@ -27,7 +27,7 @@ import org.gradle.api.artifacts.Configuration
  */
 class ArtifactoryRestPlugin implements Plugin<Project> {
     public static final String ARTIFACTORY_CONFIGURATION_NAME = 'artifactoryRest'
-    public static final String ARTIFACTORY_REST_DEFAULT_VERSION = '0.9.8'
+    public static final String ARTIFACTORY_REST_DEFAULT_VERSION = '1.0.0'
     public static final String EXTENSION_NAME = 'artifactoryRest'
     public static final String DEFAULT_TASK_GROUP = 'ArtifactoryRest'
 
@@ -61,7 +61,7 @@ class ArtifactoryRestPlugin implements Plugin<Project> {
         }
         Configuration configuration = project.configurations.getByName(ARTIFACTORY_CONFIGURATION_NAME)
         configuration.defaultDependencies { dependencies ->
-            def artifactoryRestGAVC = "com.cdancy:artifactory-rest:$ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION:all"
+            def artifactoryRestGAVC = "io.github.cdancy:artifactory-rest:$ArtifactoryRestPlugin.ARTIFACTORY_REST_DEFAULT_VERSION:all"
             def artifactoryRestDep = project.dependencies.create(artifactoryRestGAVC) {
                 transitive = false
             }

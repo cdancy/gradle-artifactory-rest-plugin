@@ -1,6 +1,6 @@
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Artifactory REST client',
+        attributes 'Implementation-Title': 'Gradle Artifactory REST Plugin',
                    'Implementation-Version': version,
                    'Built-By': System.getProperty('user.name'),
                    'Built-Date': new Date(),
@@ -15,6 +15,6 @@ task sourcesJar(type: Jar) {
 }
 
 task docsJar(type: Jar, dependsOn: groovydoc) {
-    classifier 'docs'
+    classifier 'javadocs'
     from groovydoc.destinationDir
 }

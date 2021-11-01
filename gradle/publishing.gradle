@@ -1,15 +1,5 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
-    }
-}
-
 apply plugin: 'maven-publish'
-apply plugin: com.jfrog.bintray.gradle.BintrayPlugin
+apply plugin: 'signing'
 
 project.afterEvaluate {
     //needs to be in afterEvaluate as its dynamically added by the java-gradle-plugin
@@ -17,58 +7,15 @@ project.afterEvaluate {
     project.publishing.publications.pluginMaven.artifact project.docsJar
 }
 
-artifactory {
-    contextUrl = artifactoryURL
-    publish {
-        repository {
-            repoKey = version.endsWith('-SNAPSHOT') ? snapshotRepository : releaseRepository
-            username = artifactoryUser
-            password = artifactoryPassword
-            mavenCompatible = true
-        }
-        defaults {
-            //publish the plugin & its marker file (used for new-style plugins {} closure)
-            publications ('pluginMaven', 'mainPluginMarkerMaven')
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("$sonatypeURL/service/local/"))
+            snapshotRepositoryUrl.set(uri("$sonatypeURL/content/repositories/snapshots/"))
         }
     }
 }
 
-bintray {
-
-    user = project.bintrayUsername
-    key = project.bintrayKey
-    //publish the plugin & its marker file (used for new-style plugins {} closure)
-    publications = ['pluginMaven', 'mainPluginMarkerMaven']
-    publish = true
-
-    pkg {
-        repo = 'gradle-plugins'
-        name = 'gradle-artifactory-rest-plugin'
-        desc = 'Gradle plugin for working with Artifactorys REST API.'
-        websiteUrl = "https://github.com/cdancy/${project.name}"
-        issueTrackerUrl = "https://github.com/cdancy/${project.name}/issues"
-        vcsUrl = "https://github.com/cdancy/${project.name}.git"
-        licenses = ['Apache-2.0']
-        labels = ['gradle', 'artifactory', 'rest', 'plugin', 'gradle-artifactory-rest-plugin']
-        publicDownloadNumbers = true
-        githubRepo = "cdancy/${project.name}"
-        githubReleaseNotesFile = 'RELEASE_NOTES.md'
-
-        version {
-            released  = new Date()
-            vcsTag = "v$project.version"
-            attributes = ['gradle-plugin': ["gradle-artifactory-rest-plugin"]]
-
-            gpg {
-                sign = true
-                passphrase = resolveProperty('GPG_PASSPHRASE', 'gpgPassphrase')
-            }
-        }
-    }
-}
-
-String resolveProperty(String envVarKey, String projectPropKey) {
-    String propValue = System.getenv()[envVarKey]
-    if(propValue) { return propValue }
-    hasProperty(projectPropKey) ? getProperty(projectPropKey) : null
+signing {
+    sign(publishing.publications)
 }

@@ -1,6 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
+        gradlePluginPortal()
+        mavenCentral()
     }
 
     dependencies {
@@ -25,7 +26,6 @@ githubPages {
 }
 
 publishGhPages.dependsOn javadoc, groovydoc
-
 
 String resolveProperty(String propKey) {
     String propValue = System.getenv()[propKey]

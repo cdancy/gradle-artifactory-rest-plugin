@@ -1,4 +1,5 @@
-### Version 1.1.2 (TBA)
+### Version 1.2.9 (11/1/21)
+* Migrate to maven central and update project
 
 ### Version 1.1.1 (9/24/20)
 * FIX: serialization error in ArtifactToCopy

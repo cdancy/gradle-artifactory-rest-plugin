@@ -21,7 +21,7 @@ import com.cdancy.gradle.artifactory.rest.utils.ThreadContextClassLoader
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.jclouds.io.Payload
+import io.github.cdancy.artifactory.rest.shaded.org.jclouds.io.Payload
 import spock.lang.Specification
 
 /**
