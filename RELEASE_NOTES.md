@@ -1,4 +1,4 @@
-### Version 1.2.9 (11/1/21)
+### Version 1.2.0 (11/1/21)
 * Migrate to maven central and update project
 
 ### Version 1.1.1 (9/24/20)
