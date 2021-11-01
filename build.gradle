@@ -2,26 +2,26 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
     id 'maven-publish'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
+    id 'com.gradle.plugin-publish' version '0.16.0'
+}
+
+pluginBundle {
+    website = 'https://github.com/cdancy/gradle-artifactory-rest-plugin'
+    vcsUrl = 'https://github.com/cdancy/gradle-artifactory-rest-plugin.git'
+    tags = ['gradle', 'artifactory', 'rest', 'plugin', 'gradle-artifactory-rest-plugin', 'artifactory-rest']
 }
 
 gradlePlugin {
     plugins {
         main {
-            id = 'gradle-artifactory-rest'
+            id = 'gradle.artifactory.rest'
+            displayName = 'Gradle Artifactory Rest Plugin'
             implementationClass = 'com.cdancy.gradle.artifactory.rest.ArtifactoryRestPlugin'
         }
     }
 }
 
 validateTaskProperties { failOnWarning = true }
-
-apply from: "$rootDir/gradle/dependencies.gradle"
-apply from: "$rootDir/gradle/additional-artifacts.gradle"
-apply from: "$rootDir/gradle/publishing.gradle"
-apply from: "$rootDir/gradle/documentation.gradle"
-apply from: "$rootDir/gradle/release.gradle"
 
 repositories {
     gradlePluginPortal()
