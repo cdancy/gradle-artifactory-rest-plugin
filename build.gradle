@@ -16,6 +16,7 @@ gradlePlugin {
         main {
             id = 'gradle.artifactory.rest'
             displayName = 'Gradle Artifactory Rest Plugin'
+            description = 'Gradle Plugin to work against Artifactorys REST Api'
             implementationClass = 'com.cdancy.gradle.artifactory.rest.ArtifactoryRestPlugin'
         }
     }
