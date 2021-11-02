@@ -48,3 +48,12 @@ targetCompatibility = compatibilityVersion
 tasks.withType(JavaCompile) {
     options.compilerArgs += ["-Xlint:-options"]
 }
+
+tasks.publishPlugins {
+    onlyIf { !"$version".endsWith('SNAPSHOT') }
+}
+
+task release {
+    outputs.upToDateWhen { false }
+    dependsOn('publishPlugins')
+}
