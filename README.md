@@ -10,18 +10,12 @@
 Gradle plugin, based on jclouds, for interacting with Artifactory's REST API.
 
 ## Setup
+Plugin is hosted on gradles plugin-portal so build scripts **may** have to be adjusted to account for this.
 
 ```
-buildscript() {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath group: 'com.cdancy', name: 'gradle-artifactory-rest-plugin', version: 'X.Y.Z'
-    }
+plugins {
+    id("com.github.gradle.artifactory.rest") version "X.Y.Z"
 }
-
-apply plugin: 'gradle-artifactory-rest-plugin'
 ```
 ## Extension
 
