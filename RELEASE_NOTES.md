@@ -1,3 +1,6 @@
+### Version 1.3.0 (11/1/21)
+* Add MoveArtifact
+
 ### Version 1.2.0 (11/1/21)
 * Migrate to maven central and update project
 
