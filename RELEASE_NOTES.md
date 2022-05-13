@@ -1,4 +1,7 @@
-### Version 1.3.0 (11/1/21)
+### Version 1.3.1 (5/13/22)
+* Upgrade artifactory-rest
+
+### Version 1.3.0 (5/3/22)
 * Add MoveArtifact
 
 ### Version 1.2.0 (11/1/21)
