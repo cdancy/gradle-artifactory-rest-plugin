@@ -1,3 +1,5 @@
+### Version 1.3.2 (TBA)
+
 ### Version 1.3.1 (5/13/22)
 * Upgrade artifactory-rest
 
